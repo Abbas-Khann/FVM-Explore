@@ -14,9 +14,8 @@ const Hero = () => {
             from-[#C41CFF] via-[#201CFF] to-purple-500
             animate-text">FVM-Explore</span>
           </h2>
-          <p className="text-base text-skin-muted dark:text-skin-darkMuted lg:text-2xl sm:mb-14 mb-10">
-            Get access to tickets as NFTs. Retain the value of your purchased
-            Ticket NFT legally and re-sell if you want with the same price
+          <p className="sm:mt-10 text-base text-skin-muted dark:text-skin-darkMuted lg:text-2xl sm:mb-14 mb-10">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi eum sint tenetur beatae magni maxime accusamus ipsum rerum deserunt saepe.
           </p>
           <div>
             <Link href="/Usage">
