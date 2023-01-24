@@ -4,7 +4,7 @@ import '@rainbow-me/rainbowkit/styles.css';
 import {
   getDefaultWallets,
   RainbowKitProvider,
-  darkTheme
+  midnightTheme
 } from '@rainbow-me/rainbowkit';
 import { configureChains, createClient, WagmiConfig } from 'wagmi';
 import { mainnet, polygon, optimism, arbitrum } from 'wagmi/chains';
@@ -39,7 +39,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <WagmiConfig client={wagmiClient}>
       <main className={lato.className}>
-      <RainbowKitProvider chains={chains} modalSize="compact" theme={darkTheme({
+      <RainbowKitProvider chains={chains} modalSize="compact" theme={midnightTheme({
         accentColor: '#262A53',
         accentColorForeground: 'white',
         borderRadius: 'small',
