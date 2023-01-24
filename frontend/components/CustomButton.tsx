@@ -23,7 +23,7 @@ export const CustomButton = () => {
 
         return (
           <div
-            className="play-btn sm:px-4 py-2 animate-text text-2xl bg-gradient-to-t from-[#201CFF] to-[#C41CFF] text-white rounded-sm"
+            className="play-btn sm:px-4 py-2 animate-text text-2xl bg-gradient-to-t from-[#201CFF] to-[#C41CFF] hover:bg-gradient-to-b from-[#201CFF] to-[#C41CFF] text-white rounded-sm"
             {...(!ready && {
               "aria-hidden": true,
               style: {
