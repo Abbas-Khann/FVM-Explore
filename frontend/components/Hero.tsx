@@ -6,8 +6,8 @@ const Hero = () => {
   return (
     <section className="px-2 py-20 bg-black text-white">
       <div className="md:flex items-center justify-around ">
-        <div className=" md:w-3/5 px-4">
-          <h2 className="font-bold text-4xl text-skin-base my-4 leading-tight lg:text-7xl tracking-tighter mb-6">
+        <div className=" md:w-3/5 px-5">
+          <h2 className="font-bold text-4xl text-skin-base my-4 leading-tight lg:text-7xl tracking-tighter mb-6 lg:tracking-normal">
             Interact With Your<br />
             Smart Contracts using <br /> <span className="text-4xl text-skin-base my-4 leading-tight lg:text-7xl tracking-tighter mb-6 
             bg-gradient-to-r bg-clip-text text-transparent
@@ -25,7 +25,7 @@ const Hero = () => {
             </Link>
           </div>
         </div>
-        <div className="w-10/12 md:w-1/3 mx-auto md:mx-0 my-8 order-2 ">
+        <div className="w-10/12 md:w-2/4 mx-auto md:mx-0 my-8 order-2 ">
           <Image src={heroImage} alt="Hero" />
         </div>
       </div>
