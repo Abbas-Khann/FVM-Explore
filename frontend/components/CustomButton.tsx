@@ -85,7 +85,7 @@ export const CustomButton = () => {
                   </button>
 
                   <button onClick={openAccountModal} type="button">
-                    {account.displayName}
+                    {/* {account.displayName} */}
                     {account.displayBalance
                       ? ` (${account.displayBalance})`
                       : ""}
