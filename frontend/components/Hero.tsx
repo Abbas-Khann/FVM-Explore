@@ -18,7 +18,7 @@ const Hero = () => {
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi eum sint tenetur beatae magni maxime accusamus ipsum rerum deserunt saepe.
           </p>
           <div>
-            <Link href="/Usage">
+            <Link href="/Explorer">
               <button className="bg-gradient-to-t from-[#201CFF] to-[#C41CFF] py-2 px-6 hover:bg-gradient-to-b from-[#201CFF] to-[#C41CFF]">
                 See it in action
               </button>
