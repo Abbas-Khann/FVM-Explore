@@ -2,7 +2,7 @@ import React from "react";
 import Navbar from "@/components/Navbar";
 import Input from "@/components/Input";
 import Footer from "@/components/Footer";
-import ReadFunction from "@/components/ReturnedFunction";
+import ReturnedFunction from "@/components/ReturnedFunction";
 
 const Explorer = () => {
     return(
@@ -23,11 +23,11 @@ const Explorer = () => {
             <div
             className="flex items-center justify-evenly flex-wrap"
             >
-                <ReadFunction />
-                <ReadFunction />
-                <ReadFunction />
-                <ReadFunction />
-                <ReadFunction />
+                <ReturnedFunction />
+                <ReturnedFunction />
+                <ReturnedFunction />
+                <ReturnedFunction />
+                <ReturnedFunction />
             </div>
             <Footer />
         </main>

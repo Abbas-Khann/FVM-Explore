@@ -1,6 +1,6 @@
 import React from "react";
 
-const ReadFunction = () => {
+const ReturnedFunction = () => {
     return(
         <div
         className="flex flex-col w-[318px] pb-5 bg-gray-300 px-8 border-t-8 border-orange-400 rounded-t-lg my-10 mx-10"
@@ -32,4 +32,4 @@ const ReadFunction = () => {
     )
 }
 
-export default ReadFunction
+export default ReturnedFunction
