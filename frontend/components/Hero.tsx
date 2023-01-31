@@ -17,10 +17,17 @@ const Hero = () => {
           <p className="sm:mt-10 text-base text-skin-muted dark:text-skin-darkMuted lg:text-2xl sm:mb-14 mb-10">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi eum sint tenetur beatae magni maxime accusamus ipsum rerum deserunt saepe.
           </p>
-          <div>
+          <div
+          className="flex flex-col sm:flex-row"
+          >
             <Link href="/Explorer">
+              <button className="bg-gradient-to-t from-[#201CFF] to-[#C41CFF] py-2 px-6 hover:bg-gradient-to-b from-[#201CFF] to-[#C41CFF] sm:mr-10 mb-5">
+                Explorer
+              </button>
+            </Link>
+            <Link href="/Deployer">
               <button className="bg-gradient-to-t from-[#201CFF] to-[#C41CFF] py-2 px-6 hover:bg-gradient-to-b from-[#201CFF] to-[#C41CFF]">
-                See it in action
+                Deployer
               </button>
             </Link>
           </div>
