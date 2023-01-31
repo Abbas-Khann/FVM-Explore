@@ -11,7 +11,9 @@ const Explorer = () => {
   const [writeFunctions, setWriteFunctions] = useState<functionType[]>();
   const [showType, setShowType] = useState<string>();
   const [constructors, setConstructors] = useState<functionType[]>();
-  const [contractAddress, setContractAddress] = useState<string>("");
+  const [contractAddress, setContractAddress] = useState<string>(
+    "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  );
 
   async function getData() {
     const data = await analyzeABI(ABI);

@@ -1,13 +1,15 @@
 import { argType, functionType } from "@/functionality/analyzeABI";
-import ethers from "ethers";
+import { utils, ethers } from "ethers";
 import React, { useEffect, useState } from "react";
 import {
   useAccount,
   useContract,
+  useContractRead,
   usePrepareSendTransaction,
   useProvider,
   useSendTransaction,
   useSigner,
+  useWaitForTransaction,
 } from "wagmi";
 
 const ReturnedFunction = (props: any) => {
@@ -24,36 +26,8 @@ const ReturnedFunction = (props: any) => {
   const provider = useProvider();
   const { data: signer } = useSigner();
 
-  const abiInterface = new ethers.utils.Interface([data]);
-
-  const encodedData = abiInterface.encodeFunctionData(
-    `${data.name}`,
-    argInputs
-  );
-
-  const { config, error } = usePrepareSendTransaction({
-    request: {
-      to: contractAddress,
-      data: encodedData,
-      value: ethers.utils.parseEther(value),
-    },
-  });
-
-  const {
-    data: txData,
-    isLoading,
-    isSuccess,
-    sendTransaction,
-  } = useSendTransaction(config);
-
-  //   const contract=useContract({
-  //     addressOrName: contractAddress,
-  //     contractInterface: [data],
-  //     signerOrProvider: signer || provider,
-  //   });
-
   async function handle() {
-    console.log(data);
+    // console.log(data);
     setInputs(data.inputs);
     setOutputs(data.outputs);
     if (data.stateMutability) {
@@ -63,11 +37,55 @@ const ReturnedFunction = (props: any) => {
   }
 
   async function handleSubmit() {
-    sendTransaction?.();
+    const abiInterface = new ethers.utils.Interface([data]);
 
-    /// check if the transaction is read or write
+    const encodedData = abiInterface.encodeFunctionData(
+      `${data.name}`,
+      argInputs
+    );
 
-    /// Handle the outputs
+    const tx = {
+      to: contractAddress,
+      data: encodedData,
+    };
+
+    if (data.stateMutability == "view") {
+      // read tx
+      const txdata = await provider.call(tx);
+
+      const decoded = abiInterface.decodeFunctionData(`${data.name}`, txdata);
+
+      console.log(txdata, decoded);
+
+      //   const {
+      //     data: readData,
+      //     isError,
+      //     isLoading,
+      //   } = useContractRead({
+      //     address: "0xecb504d39723b0be0e3a9aa33d646642d1051ee1",
+      //     abi: [data],
+      //     functionName: `${data.name}`,
+      //     args: argInputs,
+      //   });
+    } else if (data.stateMutability != "view") {
+      //   const { config, error } = usePrepareSendTransaction({
+      //     request: {
+      //       to: contractAddress,
+      //       data: encodedData,
+      //       value: ethers.utils.parseEther(value),
+      //     },
+      //   });
+      //   const { data: txData, sendTransaction } = useSendTransaction(config);
+      //   sendTransaction?.();
+      //   const { isLoading } = useWaitForTransaction({
+      //     hash: data?.hash,
+      //   });
+
+      // send write transaction
+      const txdata = await signer?.sendTransaction(tx);
+
+      console.log(txdata);
+    }
   }
 
   async function handleInput(inputvalue: any, key: number) {
