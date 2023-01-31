@@ -1,6 +1,11 @@
 const address = "";
 const sourceCode = "";
 
+// async function readFile(path) {
+//   const code = readFileSync(path,'utf8');
+
+// }
+
 async function compile(code) {
   var input = {
     language: "Solidity",
