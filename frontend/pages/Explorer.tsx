@@ -11,6 +11,7 @@ const Explorer = () => {
   const [writeFunctions, setWriteFunctions] = useState<functionType[]>();
   const [showType, setShowType] = useState<string>();
   const [constructors, setConstructors] = useState<functionType[]>();
+  const [contractAddress, setContractAddress] = useState<string>("");
 
   async function getData() {
     const data = await analyzeABI(ABI);
@@ -51,7 +52,13 @@ const Explorer = () => {
         <div className="flex items-center justify-evenly flex-wrap">
           {readFunctions &&
             readFunctions.map((readFunction, key) => {
-              return <ReturnedFunction functionData={readFunction} id={key} />;
+              return (
+                <ReturnedFunction
+                  functionData={readFunction}
+                  id={key}
+                  contractAddress={contractAddress}
+                />
+              );
             })}
         </div>
       )}
@@ -59,7 +66,13 @@ const Explorer = () => {
         <div className="flex items-center justify-evenly flex-wrap">
           {writeFunctions &&
             writeFunctions.map((writeFunction, key) => {
-              return <ReturnedFunction functionData={writeFunction} id={key} />;
+              return (
+                <ReturnedFunction
+                  functionData={writeFunction}
+                  id={key}
+                  contractAddress={contractAddress}
+                />
+              );
             })}
         </div>
       )}
