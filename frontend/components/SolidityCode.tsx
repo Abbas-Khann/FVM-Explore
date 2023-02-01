@@ -8,6 +8,7 @@ import { Contract, Wallet } from "ethers";
 import { Registery_ABI, Registery_address } from "@/constants/constants";
 
 const explorerLink = "";
+const private_key: any = process.env.PRIVATE_KEY;
 
 const Code = () => {
   const { address } = useAccount();
@@ -25,6 +26,14 @@ const Code = () => {
   const [txLink, setTxLink] = useState<string>("");
   const [compiled, setCompiled] = useState<Boolean>(false);
   const [ipfsLink, setIpfsLink] = useState<string>();
+
+  /// add the ENV thing and enable verification
+  // const manager_wallet = new Wallet(private_key, provider);
+  // const registery_contract = new Contract(
+  //   Registery_address,
+  //   Registery_ABI,
+  //   manager_wallet
+  // );
 
   /// contract with imports have to be managed , not yet handled
   async function handleCompile() {
@@ -87,6 +96,8 @@ const Code = () => {
     const txHash = await deploy(output.bytecode, address);
     const txLink = `${explorerLink}/tx/${txHash}`;
     console.log(txLink);
+
+    ///Show the tx
     setTxLink(txLink);
     fetchTransaction(txHash);
   }
@@ -121,8 +132,17 @@ const Code = () => {
     setIpfsLink(IPFSURL);
 
     /// Store the IPFS link somewhere
-    const manager_wallet = new Wallet(process.env.PRIVATE_KEY, provider);
-    const registery_contract = new Contract(Registery_address, Registery_ABI);
+
+    const tx = await registery_contract.addContractRecord(
+      contractAddress,
+      IPFSURL
+    );
+
+    await tx.wait();
+
+    console.log(tx);
+
+    console.log("Record Added in the registery");
   }
 
   return (
@@ -158,6 +178,12 @@ const Code = () => {
           Deploy
         </button>
       )}
+      <button
+        onClick={() => verifyContract()}
+        className="bg-gradient-to-t from-[#201CFF] to-[#C41CFF] py-2 px-10 hover:bg-gradient-to-b from-[#201CFF] to-[#C41CFF] sm:mr-10 mb-5 text-white"
+      >
+        Verify
+      </button>
     </div>
   );
 };
