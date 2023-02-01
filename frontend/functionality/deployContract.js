@@ -6,7 +6,10 @@ const sourceCode = "";
 
 // }
 
-async function compile(code) {
+// import * as wrapper from "solc/wrapper";
+// const solc = wrapper(window.Module);
+
+export async function compileContract(code) {
   var input = {
     language: "Solidity",
     sources: {
@@ -36,7 +39,7 @@ async function compile(code) {
   }
 }
 
-async function deploy(bytecode) {
+export async function deploy(bytecode) {
   ethereum
     .request({
       method: "eth_sendTransaction",
@@ -58,7 +61,7 @@ async function deploy(bytecode) {
 }
 
 export async function deployContract() {
-  const data = await compile(sourceCode);
+  const data = await compileContract(sourceCode);
   console.log(data);
 
   const txData = await deploy(data.bytecode);
