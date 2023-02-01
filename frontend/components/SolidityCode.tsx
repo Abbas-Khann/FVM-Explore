@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from "react";
 import ConstructorArguments from "./ConstructorArgs";
-import { deployContract } from "../functionality/deployContract";
+import { deploy } from "../functionality/deployContract";
+import { useAccount, useProvider, useTransaction } from "wagmi";
+
+const explorerLink = "";
 
 const Code = () => {
+  const { address } = useAccount();
+  const provider = useProvider();
   const [sourceCode, setSourceCode] = useState<string>();
-  const [output, setOutput] = useState<string>();
+  const [output, setOutput] = useState<{ abi: any[]; bytecode: string }>();
+  const [contractAddress, setContractAddress] = useState<string>();
   const [error, setError] = useState<string>();
+  const [txLink, setTxLink] = useState<string>("");
 
   async function handleCompile() {
     if (!sourceCode) {
@@ -28,9 +35,45 @@ const Code = () => {
 
     if (response.status == 200) {
       setOutput(formattedResponse);
+      console.log("Successfully Compiled");
+      setError("Successfully Compiled");
+
+      /// analyze the ABI and show const
+      handleABI(formattedResponse.abi);
     } else {
       setError(formattedResponse);
     }
+  }
+
+  async function handleABI(abi: any[]) {
+    /// analyze the ABI and show constructors
+  }
+
+  async function handleDeploy() {
+    if (!output?.bytecode) {
+      console.log("Compile the Contract first");
+      setError("Compile the Contract first");
+      return;
+    }
+
+    console.log("deploying...");
+    const txHash = await deploy(output.bytecode, address);
+    const txLink = `${explorerLink}/tx/${txHash}`;
+    console.log(txLink);
+    setTxLink(txLink);
+    fetchTransaction(txHash);
+  }
+
+  async function fetchTransaction(txhash: any) {
+    const data: any = await provider.getTransaction(`${txhash}`);
+    const contractAddr = data.creates;
+    const contractLink = `${explorerLink}/contract/${contractAddr}`;
+    console.log(`Contract Created with the address${contractLink}`);
+    setContractAddress(contractAddr);
+  }
+
+  async function verifyContract() {
+    /// store the contract info on the Web3.storage and add the data , CID to a Contract or Web2 Database
   }
 
   return (
@@ -55,7 +98,10 @@ const Code = () => {
         Compile
       </button>
 
-      <button className="bg-gradient-to-t from-[#201CFF] to-[#C41CFF] py-2 px-10 hover:bg-gradient-to-b from-[#201CFF] to-[#C41CFF] sm:mr-10 mb-5 text-white">
+      <button
+        onClick={() => handleDeploy()}
+        className="bg-gradient-to-t from-[#201CFF] to-[#C41CFF] py-2 px-10 hover:bg-gradient-to-b from-[#201CFF] to-[#C41CFF] sm:mr-10 mb-5 text-white"
+      >
         Deploy
       </button>
     </div>

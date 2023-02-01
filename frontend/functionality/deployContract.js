@@ -1,10 +1,9 @@
-const address = "";
-const sourceCode = "";
-
 // async function readFile(path) {
 //   const code = readFileSync(path,'utf8');
 
 // }
+
+// import solc from "solc";
 
 // import * as wrapper from "solc/wrapper";
 // const solc = wrapper(window.Module);
@@ -39,7 +38,7 @@ export async function compileContract(code) {
   }
 }
 
-export async function deploy(bytecode) {
+export async function deploy(bytecode, address) {
   ethereum
     .request({
       method: "eth_sendTransaction",
