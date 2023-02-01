@@ -14,7 +14,8 @@ const Explorer = () => {
   const [contractAddress, setContractAddress] = useState<string>(
     "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
   );
-
+  const [isReadActive, setIsReadActive] = useState(false);
+  const [isWriteActive, setIsWriteActive] = useState(false);
   async function getData() {
     const data = await analyzeABI(ABI);
     // console.log(data);
@@ -37,14 +38,14 @@ const Explorer = () => {
         <Input />
         <div className="flex justify-evenly py-10">
           <button
-            className="text-white text-lg"
-            onClick={() => setShowType("read")}
+            className={`text-white text-lg focus:border-t-2 ${isReadActive ? "border-t-2" : "none"}`}
+            onClick={() => {setShowType("read"); setIsReadActive(true); setIsWriteActive(false)}}
           >
             Read Contract
           </button>
           <button
-            className="text-white text-lg"
-            onClick={() => setShowType("write")}
+            className={`text-white text-lg focus:border-t-2 ${isWriteActive ? "border-t-2" : "none"}`}
+            onClick={() => {setShowType("write"); setIsWriteActive(true); setIsReadActive(false)}}
           >
             Write Contract
           </button>
