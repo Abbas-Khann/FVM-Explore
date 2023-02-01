@@ -4,6 +4,8 @@ import { deploy } from "../functionality/deployContract";
 import { useAccount, useProvider, useTransaction } from "wagmi";
 import { analyzeABI, functionType } from "@/functionality/analyzeABI";
 import { storeContract } from "@/functionality/storeData";
+import { Contract } from "ethers";
+import { Registery_ABI, Registery_address } from "@/constants/constants";
 
 const explorerLink = "";
 
@@ -119,6 +121,8 @@ const Code = () => {
     setIpfsLink(IPFSURL);
 
     /// Store the IPFS link somewhere
+    const manager_wallet = new Wallet(process.env.PRIVATE_KEY, provider);
+    const registery_contract = new Contract(Registery_address, Registery_ABI);
   }
 
   return (
