@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import ConstructorArguments from "./ConstructorArgs";
 import { deploy } from "../functionality/deployContract";
 import { useAccount, useProvider, useTransaction } from "wagmi";
+import { analyzeABI, functionType } from "@/functionality/analyzeABI";
 
 const explorerLink = "";
 
@@ -10,10 +11,14 @@ const Code = () => {
   const provider = useProvider();
   const [sourceCode, setSourceCode] = useState<string>();
   const [output, setOutput] = useState<{ abi: any[]; bytecode: string }>();
+  const [constructorArg, setConstructorArg] = useState<functionType[]>();
+  const [argInputs, setArgInputs] = useState<any[]>([]);
   const [contractAddress, setContractAddress] = useState<string>();
   const [error, setError] = useState<string>();
   const [txLink, setTxLink] = useState<string>("");
+  const [compiled, setCompiled] = useState<Boolean>(false);
 
+  /// contract with imports have to be managed , not yet handled
   async function handleCompile() {
     if (!sourceCode) {
       console.log("no Source code set");
@@ -37,9 +42,10 @@ const Code = () => {
       setOutput(formattedResponse);
       console.log("Successfully Compiled");
       setError("Successfully Compiled");
-
       /// analyze the ABI and show const
       handleABI(formattedResponse.abi);
+
+      setCompiled(true);
     } else {
       setError(formattedResponse);
     }
@@ -47,13 +53,26 @@ const Code = () => {
 
   async function handleABI(abi: any[]) {
     /// analyze the ABI and show constructors
+    const data = await analyzeABI(abi);
+    console.log(data?.constructor);
+    setConstructorArg(data?.constructor);
   }
 
   async function handleDeploy() {
+    /// checking if the contract is compiled
     if (!output?.bytecode) {
       console.log("Compile the Contract first");
       setError("Compile the Contract first");
       return;
+    }
+
+    /// checking if the contructor has arg
+    if (constructorArg?.length) {
+      if (!argInputs) {
+        console.log("Add the Constructor Arguements");
+        setError("Add the Constructor Arguements");
+        return;
+      }
     }
 
     console.log("deploying...");
@@ -89,7 +108,13 @@ const Code = () => {
         onChange={(e) => setSourceCode(e.target.value)}
         className="w-8/12 sm:w-6/12 h-[70vh] mb-10 p-10 bg-gray-900 text-white text-xl rounded-2xl"
       />
-      <ConstructorArguments />
+      {constructorArg?.length && (
+        <ConstructorArguments
+          args={constructorArg}
+          inputs={argInputs}
+          setInputs={setArgInputs}
+        />
+      )}
       {error && <p className="text-white">{error}</p>}
       <button
         onClick={() => handleCompile()}
@@ -97,13 +122,14 @@ const Code = () => {
       >
         Compile
       </button>
-
-      <button
-        onClick={() => handleDeploy()}
-        className="bg-gradient-to-t from-[#201CFF] to-[#C41CFF] py-2 px-10 hover:bg-gradient-to-b from-[#201CFF] to-[#C41CFF] sm:mr-10 mb-5 text-white"
-      >
-        Deploy
-      </button>
+      {compiled && (
+        <button
+          onClick={() => handleDeploy()}
+          className="bg-gradient-to-t from-[#201CFF] to-[#C41CFF] py-2 px-10 hover:bg-gradient-to-b from-[#201CFF] to-[#C41CFF] sm:mr-10 mb-5 text-white"
+        >
+          Deploy
+        </button>
+      )}
     </div>
   );
 };
