@@ -8,32 +8,30 @@ import { Contract, Wallet } from "ethers";
 import { Registery_ABI, Registery_address } from "@/constants/constants";
 
 const explorerLink = "";
-const private_key: any = process.env.PRIVATE_KEY;
+const private_key: any = process.env.NEXT_PUBLIC_PRIVATE_KEY;
 
 const Code = () => {
   const { address } = useAccount();
   const provider = useProvider();
 
-  const [contractName, setContractName] = useState<string>("Contract");
+  const [contractName, setContractName] = useState<string>();
   const [sourceCode, setSourceCode] = useState<string>();
   const [output, setOutput] = useState<{ abi: any[]; bytecode: string }>();
   const [constructorArg, setConstructorArg] = useState<functionType[]>();
   const [argInputs, setArgInputs] = useState<any[]>([]);
-  const [contractAddress, setContractAddress] = useState<string>(
-    "0x97d17b1d164fb152186ace55bb1503d85b83f767"
-  );
+  const [contractAddress, setContractAddress] = useState<string>();
   const [error, setError] = useState<string>();
   const [txLink, setTxLink] = useState<string>("");
   const [compiled, setCompiled] = useState<Boolean>(false);
   const [ipfsLink, setIpfsLink] = useState<string>();
 
-  /// add the ENV thing and enable verification
-  // const manager_wallet = new Wallet(private_key, provider);
-  // const registery_contract = new Contract(
-  //   Registery_address,
-  //   Registery_ABI,
-  //   manager_wallet
-  // );
+  /// add the ENV thing and enable
+  const manager_wallet = new Wallet(private_key, provider);
+  const registery_contract = new Contract(
+    Registery_address,
+    Registery_ABI,
+    manager_wallet
+  );
 
   /// contract with imports have to be managed , not yet handled
   async function handleCompile() {
