@@ -3,20 +3,26 @@ import ConstructorArguments from "./ConstructorArgs";
 import { deploy } from "../functionality/deployContract";
 import { useAccount, useProvider, useTransaction } from "wagmi";
 import { analyzeABI, functionType } from "@/functionality/analyzeABI";
+import { storeContract } from "@/functionality/storeData";
 
 const explorerLink = "";
 
 const Code = () => {
   const { address } = useAccount();
   const provider = useProvider();
+
+  const [contractName, setContractName] = useState<string>("Contract");
   const [sourceCode, setSourceCode] = useState<string>();
   const [output, setOutput] = useState<{ abi: any[]; bytecode: string }>();
   const [constructorArg, setConstructorArg] = useState<functionType[]>();
   const [argInputs, setArgInputs] = useState<any[]>([]);
-  const [contractAddress, setContractAddress] = useState<string>();
+  const [contractAddress, setContractAddress] = useState<string>(
+    "0x97d17b1d164fb152186ace55bb1503d85b83f767"
+  );
   const [error, setError] = useState<string>();
   const [txLink, setTxLink] = useState<string>("");
   const [compiled, setCompiled] = useState<Boolean>(false);
+  const [ipfsLink, setIpfsLink] = useState<string>();
 
   /// contract with imports have to be managed , not yet handled
   async function handleCompile() {
@@ -93,14 +99,32 @@ const Code = () => {
 
   async function verifyContract() {
     /// store the contract info on the Web3.storage and add the data , CID to a Contract or Web2 Database
+    if (!output && !contractAddress) {
+      console.log("Compile & Deploy the Contract first");
+      setError("Compile & Deploy  the Contract first");
+      return;
+    }
+
+    const contractData = {
+      name: contractName,
+      address: contractAddress,
+      abi: output?.abi,
+      bytecode: output?.bytecode,
+      deployer: address,
+    };
+
+    const CID = await storeContract(contractData);
+    const IPFSURL = `https://w3s.link/ipfs/${CID}`;
+    console.log(IPFSURL);
+    setIpfsLink(IPFSURL);
+
+    /// Store the IPFS link somewhere
   }
 
   return (
     <div className="flex items-center justify-center flex-col">
-      <script
-        type="text/javascript"
-        src="https://binaries.soliditylang.org/bin/soljson-latest.js"
-      ></script>
+      {/* Add the ContractName input box */}
+
       <h1 className="text-white font-bold text-2xl text-skin-base my-4 leading-tight lg:text-5xl tracking-tighter mb-6 lg:tracking-normal">
         Submit Your Code Here
       </h1>
