@@ -4,7 +4,7 @@ import { deploy } from "../functionality/deployContract";
 import { useAccount, useProvider, useTransaction } from "wagmi";
 import { analyzeABI, functionType } from "@/functionality/analyzeABI";
 import { storeContract } from "@/functionality/storeData";
-import { Contract } from "ethers";
+import { Contract, Wallet } from "ethers";
 import { Registery_ABI, Registery_address } from "@/constants/constants";
 
 const explorerLink = "";
