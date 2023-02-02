@@ -4,8 +4,8 @@
 --> Ouput formatting in Explorer✅
 --> Deployed contract verfication✅
 --> Send the Arg with the contract deployement✅
---> API creation
---> Contract code
+--> API creation ✅
+--> Contract code ✅
 
 Mumbai Registery Contract Address
 == 0x25D1F9cfb2317f1526af5eD57f49F68DCFb5c9a2

@@ -66,6 +66,7 @@ const Explorer = () => {
       return;
     }
 
+    /// has bytecode , abi , code
     setContractData(contractData);
     getData(contractData.abi);
   }

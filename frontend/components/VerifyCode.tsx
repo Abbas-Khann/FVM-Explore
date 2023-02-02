@@ -74,9 +74,10 @@ const Code = () => {
     const contractData = {
       name: contractName,
       address: contractAddress,
+      deployer: address,
       abi: output?.abi,
       bytecode: output?.bytecode,
-      deployer: address,
+      code: sourceCode,
     };
 
     try {

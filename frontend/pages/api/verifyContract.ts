@@ -1,42 +1,63 @@
-async function verifyContract(
-  contractName: string,
-  output: { abi: any[], bytecode: string }
-) {
-  /// store the contract info on the Web3.storage and add the data , CID to a Contract or Web2 Database
-  if (!output && !contractAddress) {
-    console.log("Compile & Deploy the Contract first");
-    return;
+// send in the ContractData as
+
+type contractDataType = {
+  name: string;
+  address: string;
+  deployer: string;
+  abi: any[];
+  bytecode: string;
+  code: any;
+};
+
+import { Registery_ABI, Registery_address } from "@/constants/constants";
+import { storeContract } from "@/functionality/storeData";
+import { Contract, Wallet, ethers } from "ethers";
+import type { NextApiRequest, NextApiResponse } from "next";
+
+const private_key: any = process.env.NEXT_PUBLIC_PRIVATE_KEY;
+const RPC_LINK = process.env.NEXT_PUBLIC_RPC_URL;
+
+async function verifyContract(req: NextApiRequest, res: NextApiResponse) {
+  if (!req.body.contractData) {
+    return res.status(400).json({ message: "Contract Data required" });
   }
 
-  const contractData = {
-    name: contractName,
-    address: contractAddress,
-    abi: output?.abi,
-    bytecode: output?.bytecode,
-    deployer: address,
-  };
+  const contractData: contractDataType = req.body.contractData;
 
-  const CID = await storeContract(contractData);
-  const IPFSURL = `https://w3s.link/ipfs/${CID}`;
-  console.log(IPFSURL);
-  // setIpfsLink(IPFSURL);
+  if (!contractData) {
+    return res.status(400).json({ message: "Check contract Data Again" });
+  }
 
-  /// Store the IPFS link somewhere
-  const manager_wallet = new Wallet(private_key, provider);
-  const registery_contract = new Contract(
-    Registery_address,
-    Registery_ABI,
-    manager_wallet
-  );
+  try {
+    const CID = await storeContract(contractData);
+    const IPFSURL = `https://w3s.link/ipfs/${CID}`;
+    console.log(IPFSURL);
+    // setIpfsLink(IPFSURL);
 
-  const tx = await registery_contract.addContractRecord(
-    contractAddress,
-    IPFSURL
-  );
+    /// Store the IPFS link somewhere
 
-  await tx.wait();
+    const provider = new ethers.providers.JsonRpcProvider(RPC_LINK);
+    const manager_wallet = new Wallet(private_key, provider);
+    const registery_contract = new Contract(
+      Registery_address,
+      Registery_ABI,
+      manager_wallet
+    );
 
-  console.log(tx);
+    const tx = await registery_contract.addContractRecord(
+      contractData.address,
+      IPFSURL
+    );
 
-  console.log("Record Added in the registery");
+    await tx.wait();
+    console.log("Record Added in the registery");
+
+    /// Record of the tx with the txHash
+    res.status(200).json({ output: tx });
+  } catch (error) {
+    res.status(400).json({ output: error });
+    console.log(error);
+  }
 }
+
+export default verifyContract;

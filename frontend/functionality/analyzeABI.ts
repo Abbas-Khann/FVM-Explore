@@ -7,8 +7,10 @@ export type argType = {
 export type contractDataType = {
   name: string;
   address: string;
+  deployer: string;
   abi: any[];
   bytecode: string;
+  code: any;
 };
 
 export type functionType =
