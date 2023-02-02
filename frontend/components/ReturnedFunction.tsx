@@ -40,27 +40,31 @@ const ReturnedFunction = (props: any) => {
   }
 
   async function handleSubmit() {
+    const abiInterface = new ethers.utils.Interface([data]);
+
+    const encodedData = abiInterface.encodeFunctionData(
+      `${data.name}`,
+      argInputs
+    );
+
+    /// Also sending the value if the function is payable
+    const tx = {
+      to: contractAddress,
+      data: encodedData,
+      value: value ? ethers.utils.parseEther(value) : 0,
+    };
+
+    let txRes: any;
+
     try {
-      const abiInterface = new ethers.utils.Interface([data]);
-
-      const encodedData = abiInterface.encodeFunctionData(
-        `${data.name}`,
-        argInputs
-      );
-
-      const tx = {
-        to: contractAddress,
-        data: encodedData,
-      };
-
       if (data.stateMutability == "view") {
         // read tx
-        const txdata = await provider.call(tx);
-        console.log(txdata);
+        txRes = await provider.call(tx);
+        console.log(txRes);
 
         const decoded: any = abiInterface.decodeFunctionResult(
           `${data.name}`,
-          txdata
+          txRes
         );
 
         /// Error handling not checked
@@ -74,17 +78,24 @@ const ReturnedFunction = (props: any) => {
 
         // output Formatting needs to be done
         let formattedOutput;
-        /// for int
-        formattedOutput = parseInt(decoded);
-        console.log(formattedOutput);
 
-        /// for Address , String
-        // formattedOutput = decoded;
+        if (Array.isArray(decoded)) {
+          setArgOutputs(decoded);
+          return;
+        } else {
+          //setting the inddividual
+          /// for int
+          formattedOutput = parseInt(decoded);
+          console.log(formattedOutput);
 
-        // pushing the results
-        let currOutput = argOutputs;
-        currOutput?.push(formattedOutput);
-        setArgOutputs(currOutput);
+          /// for Address , String
+          // formattedOutput = decoded;
+
+          // pushing the results
+          let currOutput = argOutputs;
+          currOutput?.push(formattedOutput);
+          setArgOutputs(currOutput);
+        }
 
         // results not showing up on the page on the first reload
       } else if (data.stateMutability != "view") {
@@ -103,6 +114,12 @@ const ReturnedFunction = (props: any) => {
       console.log(error);
 
       /// alert user with the error display on the page
+
+      const decoded: any = abiInterface.decodeErrorResult(
+        `${data.name}`,
+        txRes
+      );
+      console.log(txRes);
     }
   }
 
@@ -110,6 +127,33 @@ const ReturnedFunction = (props: any) => {
     let currInput: any[] = argInputs;
     currInput[key] = inputvalue;
     setArgInputs(currInput);
+  }
+
+  async function handleOutputs() {
+    console.log(argOutputs);
+    let currOutput = argOutputs;
+    outputs?.map((output, key) => {
+      if (output.type == "uint256") {
+        const formattedOuput = parseInt(currOutput[key]);
+      }
+    });
+  }
+
+  function handleOutput(output: argType, argValue: any) {
+    if (argValue == undefined) return "Nan";
+    if (output.type == "uint256") {
+      return parseInt(argValue);
+    } else if (output.type == "address") {
+      return `${argValue.slice(0, 5)}..${argValue.slice(-5)}`;
+    } else if (output.type == "bool") {
+      if (argValue) {
+        return "true";
+      } else {
+        return "false";
+      }
+    } else {
+      return argValue;
+    }
   }
 
   useEffect(() => {
@@ -156,12 +200,19 @@ const ReturnedFunction = (props: any) => {
       </div>
       {/* returned value */}
       <div className="py-3">
+        {/* align the outputs with the name and value
+         */}
         {outputs &&
           outputs.map((output, key) => {
             return (
               <>
                 <h1>{output.name ? output.name : "output :"}</h1>
-                <h2>{argOutputs[key]}</h2>
+                <h2>
+                  {/* {output.type == "uint256"
+                    ? parseInt(argOutputs[key])
+                    : argOutputs[key]} */}
+                  {handleOutput(output, argOutputs[key])}
+                </h2>
               </>
             );
           })}

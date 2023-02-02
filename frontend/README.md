@@ -1,8 +1,8 @@
 ## Current Issues
 
---> input Arg Conversion depending upon on the type of the arg , only Value needs to be changed and checked
---> Ouput formatting in Explorer
---> Deployed contract verfication
+--> input Arg Conversion depending upon on the type of the arg , only Value needs to be changed and checked ✅
+--> Ouput formatting in Explorer✅
+--> Deployed contract verfication✅
 --> Send the Arg with the contract deployement
 --> API creation
 
@@ -11,3 +11,5 @@ Mumbai Registery Contract Address
 
 Test Contract Address
 == 0x97D17b1D164fb152186ace55bB1503d85b83F767
+
+== 0xbF2B2402Ff6EAdAa634110D07354146AB8FF1Bf6

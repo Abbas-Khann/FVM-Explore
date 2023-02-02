@@ -23,9 +23,7 @@ const Explorer = () => {
   const [constructors, setConstructors] = useState<functionType[]>();
   const [contractExists, setContractExists] = useState<boolean>();
   const [contractData, setContractData] = useState<contractDataType>();
-  const [contractAddress, setContractAddress] = useState<string>(
-    "0x97D17b1D164fb152186ace55bB1503d85b83F767"
-  );
+  const [contractAddress, setContractAddress] = useState<string>();
   const [ipfsURI, setIpfsURI] = useState<string>();
   const [isReadActive, setIsReadActive] = useState(false);
   const [isWriteActive, setIsWriteActive] = useState(false);
