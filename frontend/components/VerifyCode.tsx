@@ -79,23 +79,29 @@ const Code = () => {
       deployer: address,
     };
 
-    const CID = await storeContract(contractData);
-    const IPFSURL = `https://w3s.link/ipfs/${CID}`;
-    console.log(IPFSURL);
-    setIpfsLink(IPFSURL);
+    try {
+      const CID = await storeContract(contractData);
+      const IPFSURL = `https://w3s.link/ipfs/${CID}`;
+      console.log(IPFSURL);
+      setIpfsLink(IPFSURL);
 
-    /// Store the IPFS link somewhere
+      /// Store the IPFS link somewhere
 
-    const tx = await registery_contract.addContractRecord(
-      contractAddress,
-      IPFSURL
-    );
+      const tx = await registery_contract.addContractRecord(
+        contractAddress,
+        IPFSURL
+      );
 
-    await tx.wait();
+      await tx.wait();
 
-    console.log(tx);
+      console.log(tx);
 
-    console.log("Record Added in the registery");
+      console.log("Record Added in the registery");
+    } catch (error) {
+      console.log(error);
+
+      // alert the user of the error
+    }
   }
 
   return (
