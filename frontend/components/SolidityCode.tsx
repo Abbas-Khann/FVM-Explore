@@ -17,7 +17,7 @@ const Code = () => {
   const [contractName, setContractName] = useState<string>("");
   const [sourceCode, setSourceCode] = useState<string>();
   const [output, setOutput] = useState<{ abi: any[]; bytecode: string }>();
-  const [constructorArg, setConstructorArg] = useState<functionType[]>();
+  const [constructorArg, setConstructorArg] = useState<any>();
   const [argInputs, setArgInputs] = useState<any[]>();
   const [ethValue, setEthValue] = useState<string>();
 
