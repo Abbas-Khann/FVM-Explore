@@ -1,6 +1,8 @@
 // async function readFile(path) {
 //   const code = readFileSync(path,'utf8');
 
+import { ContractFactory } from "ethers";
+
 // }
 
 // import solc from "solc";
@@ -57,6 +59,16 @@ export async function deploy(bytecode, address) {
     .catch((error) => {
       console.log(error);
     });
+}
+
+export async function deployViaEthers(bytecode, abi, signer, params) {
+  const factory = new ContractFactory(abi, bytecode, signer);
+
+  const contract = await factory.deploy(params);
+
+  console.log(contract);
+
+  return contract;
 }
 
 export async function deployContract() {

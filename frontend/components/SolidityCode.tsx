@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import ConstructorArguments from "./ConstructorArgs";
-import { deploy } from "../functionality/deployContract";
-import { useAccount, useProvider, useTransaction } from "wagmi";
+import { deploy, deployViaEthers } from "../functionality/deployContract";
+import { useAccount, useProvider, useSigner, useTransaction } from "wagmi";
 import { analyzeABI, functionType } from "@/functionality/analyzeABI";
 import { storeContract } from "@/functionality/storeData";
-import { Contract, Wallet } from "ethers";
+import { Contract, ContractFactory, Wallet, ethers } from "ethers";
 import { Registery_ABI, Registery_address } from "@/constants/constants";
 import { explorerLink } from "@/constants/constants";
 const private_key: any = process.env.NEXT_PUBLIC_PRIVATE_KEY;
@@ -12,12 +12,15 @@ const private_key: any = process.env.NEXT_PUBLIC_PRIVATE_KEY;
 const Code = () => {
   const { address } = useAccount();
   const provider = useProvider();
+  const { data: signer }: any = useSigner();
 
   const [contractName, setContractName] = useState<string>("");
   const [sourceCode, setSourceCode] = useState<string>();
   const [output, setOutput] = useState<{ abi: any[]; bytecode: string }>();
   const [constructorArg, setConstructorArg] = useState<functionType[]>();
-  const [argInputs, setArgInputs] = useState<any[]>([]);
+  const [argInputs, setArgInputs] = useState<any[]>();
+  const [ethValue, setEthValue] = useState<string>();
+
   const [contractAddress, setContractAddress] = useState<string>();
   const [error, setError] = useState<string>();
   const [txLink, setTxLink] = useState<string>("");
@@ -81,7 +84,8 @@ const Code = () => {
     }
 
     /// checking if the contructor has arg
-    if (constructorArg?.length) {
+    if (constructorArg[0].inputs?.length) {
+      console.log(argInputs);
       if (!argInputs) {
         console.log("Add the Constructor Arguements");
         setError("Add the Constructor Arguements");
@@ -90,21 +94,33 @@ const Code = () => {
     }
 
     console.log("deploying...");
-    const txHash = await deploy(output.bytecode, address);
-    const txLink = `${explorerLink}/tx/${txHash}`;
+    const factory = new ContractFactory(output.abi, output.bytecode, signer);
+
+    let contract;
+    //handle args
+    if (argInputs) {
+      contract = await factory.deploy(argInputs, {
+        value: ethValue ? ethers.utils.parseEther(ethValue) : 0,
+      });
+    } else {
+      contract = await factory.deploy({
+        value: ethValue ? ethers.utils.parseEther(ethValue) : 0,
+      });
+    }
+
+    console.log(contract);
+    const deployedContractAddress = contract.address;
+    setContractAddress(deployedContractAddress);
+    const deployTx = contract.deployTransaction;
+
+    const contractLink = `${explorerLink}/contract/${deployedContractAddress}`;
+    console.log(`Contract Created with the address${contractLink}`);
+
+    const txLink = `${explorerLink}/tx/${deployTx.hash}`;
     console.log(txLink);
 
     ///Show the tx
     setTxLink(txLink);
-    fetchTransaction(txHash);
-  }
-
-  async function fetchTransaction(txhash: any) {
-    const data: any = await provider.getTransaction(`${txhash}`);
-    const contractAddr = data.creates;
-    const contractLink = `${explorerLink}/contract/${contractAddr}`;
-    console.log(`Contract Created with the address${contractLink}`);
-    setContractAddress(contractAddr);
   }
 
   async function verifyContract() {
@@ -158,6 +174,8 @@ const Code = () => {
           args={constructorArg}
           inputs={argInputs}
           setInputs={setArgInputs}
+          eth={ethValue}
+          setEth={setEthValue}
         />
       )}
       {error && <p className="text-white">{error}</p>}

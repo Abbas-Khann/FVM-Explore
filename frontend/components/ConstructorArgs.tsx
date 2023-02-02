@@ -4,13 +4,12 @@ import React, { useEffect, useState } from "react";
 const ConstructorArguments = (props: any) => {
   const [cInputs, setCInputs] = useState<argType[]>();
   const [constructorData, setConstructorData] = useState<functionType>();
-  const [ethValue, setEthValue] = useState<string>();
 
   /// handle the value send thing
 
   async function handle() {
     const args = props.args;
-    console.log(args);
+    // console.log(args);
     setCInputs(args[0].inputs);
     setConstructorData(args[0]);
   }
@@ -36,7 +35,7 @@ const ConstructorArguments = (props: any) => {
           <input
             placeholder="Value in ETH"
             className="px-1 py-1 mb-2 text-black rounded-md"
-            onChange={(e) => setEthValue(e.target.value)}
+            onChange={(e) => props.setEth(e.target.value)}
           />
         </>
       )}
