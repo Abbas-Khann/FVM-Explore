@@ -1,6 +1,6 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
-import Code from "@/components/SolidityCode";
+import Code from "@/components/VerifyCode";
 import React from "react";
 
 const Deployer = () => {

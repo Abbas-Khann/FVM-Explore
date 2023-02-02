@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import ConstructorArguments from "./ConstructorArgs";
 import { deploy } from "../functionality/deployContract";
 import { useAccount, useProvider, useTransaction } from "wagmi";
-import { analyzeABI, functionType } from "@/functionality/analyzeABI";
 import { storeContract } from "@/functionality/storeData";
 import { Contract, Wallet } from "ethers";
 import { Registery_ABI, Registery_address } from "@/constants/constants";
 import { explorerLink } from "@/constants/constants";
 const private_key: any = process.env.NEXT_PUBLIC_PRIVATE_KEY;
+
+// goal is to remove deployement for the user , just compile , and upload to web3.storage
 
 const Code = () => {
   const { address } = useAccount();
@@ -16,11 +17,10 @@ const Code = () => {
   const [contractName, setContractName] = useState<string>("");
   const [sourceCode, setSourceCode] = useState<string>();
   const [output, setOutput] = useState<{ abi: any[]; bytecode: string }>();
-  const [constructorArg, setConstructorArg] = useState<functionType[]>();
-  const [argInputs, setArgInputs] = useState<any[]>([]);
+
   const [contractAddress, setContractAddress] = useState<string>();
   const [error, setError] = useState<string>();
-  const [txLink, setTxLink] = useState<string>("");
+
   const [compiled, setCompiled] = useState<Boolean>(false);
   const [ipfsLink, setIpfsLink] = useState<string>();
 
@@ -57,54 +57,10 @@ const Code = () => {
       console.log("Successfully Compiled");
       setError("Successfully Compiled");
       /// analyze the ABI and show const
-      handleABI(formattedResponse.abi);
-
       setCompiled(true);
     } else {
       setError(formattedResponse);
     }
-  }
-
-  async function handleABI(abi: any[]) {
-    /// analyze the ABI and show constructors
-    const data = await analyzeABI(abi);
-    console.log(data?.constructor);
-    setConstructorArg(data?.constructor);
-  }
-
-  async function handleDeploy() {
-    /// checking if the contract is compiled
-    if (!output?.bytecode) {
-      console.log("Compile the Contract first");
-      setError("Compile the Contract first");
-      return;
-    }
-
-    /// checking if the contructor has arg
-    if (constructorArg?.length) {
-      if (!argInputs) {
-        console.log("Add the Constructor Arguements");
-        setError("Add the Constructor Arguements");
-        return;
-      }
-    }
-
-    console.log("deploying...");
-    const txHash = await deploy(output.bytecode, address);
-    const txLink = `${explorerLink}/tx/${txHash}`;
-    console.log(txLink);
-
-    ///Show the tx
-    setTxLink(txLink);
-    fetchTransaction(txHash);
-  }
-
-  async function fetchTransaction(txhash: any) {
-    const data: any = await provider.getTransaction(`${txhash}`);
-    const contractAddr = data.creates;
-    const contractLink = `${explorerLink}/contract/${contractAddr}`;
-    console.log(`Contract Created with the address${contractLink}`);
-    setContractAddress(contractAddr);
   }
 
   async function verifyContract() {
@@ -144,8 +100,17 @@ const Code = () => {
 
   return (
     <div className="flex items-center justify-center flex-col">
+      // Style the input box first
+      <input
+        // placeholder="Enter Contract address"
+        type="text"
+        id=""
+        onChange={(e) => {
+          setContractAddress(e.target.value);
+        }}
+        className="rounded-md bg-gray-800 py-4 px-8 w-11/12 outline-none text-white "
+      />
       {/* Add the ContractName input box */}
-
       <h1 className="text-white font-bold text-2xl text-skin-base my-4 leading-tight lg:text-5xl tracking-tighter mb-6 lg:tracking-normal">
         Submit Your Code Here
       </h1>
@@ -153,13 +118,6 @@ const Code = () => {
         onChange={(e) => setSourceCode(e.target.value)}
         className="w-8/12 sm:w-6/12 h-[70vh] mb-10 p-10 bg-gray-900 text-white text-xl rounded-2xl"
       />
-      {constructorArg?.length && (
-        <ConstructorArguments
-          args={constructorArg}
-          inputs={argInputs}
-          setInputs={setArgInputs}
-        />
-      )}
       {error && <p className="text-white">{error}</p>}
       <button
         onClick={() => handleCompile()}
@@ -169,18 +127,12 @@ const Code = () => {
       </button>
       {compiled && (
         <button
-          onClick={() => handleDeploy()}
+          onClick={() => verifyContract()}
           className="bg-gradient-to-t from-[#201CFF] to-[#C41CFF] py-2 px-10 hover:bg-gradient-to-b from-[#201CFF] to-[#C41CFF] sm:mr-10 mb-5 text-white"
         >
-          Deploy
+          Verify
         </button>
       )}
-      <button
-        onClick={() => verifyContract()}
-        className="bg-gradient-to-t from-[#201CFF] to-[#C41CFF] py-2 px-10 hover:bg-gradient-to-b from-[#201CFF] to-[#C41CFF] sm:mr-10 mb-5 text-white"
-      >
-        Verify
-      </button>
     </div>
   );
 };
