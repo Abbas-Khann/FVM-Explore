@@ -29,10 +29,6 @@ const Code = () => {
 
   return (
     <div className="flex items-center justify-center flex-col">
-      <script
-        type="text/javascript"
-        src="https://binaries.soliditylang.org/bin/soljson-v0.8.16+commit.07a7930e.js"
-      ></script>
       <h1 className="text-white font-bold text-2xl text-skin-base my-4 leading-tight lg:text-5xl tracking-tighter mb-6 lg:tracking-normal">
         Submit Your Code Here
       </h1>

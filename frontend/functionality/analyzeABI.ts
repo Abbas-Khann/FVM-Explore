@@ -4,6 +4,13 @@ export type argType = {
   type: string;
 };
 
+export type contractDataType = {
+  name: string;
+  address: string;
+  abi: any[];
+  bytecode: string;
+};
+
 export type functionType =
   | {
       anonymous?: undefined;
@@ -40,7 +47,7 @@ export type dataType = {
   error: functionType[];
 };
 
-export const analyzeABI = async (abi: abiType) => {
+export const analyzeABI = async (abi: any[]) => {
   const functionJSONObject = {
     anonymous: true,
     inputs: [

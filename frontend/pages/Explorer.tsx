@@ -3,29 +3,85 @@ import Navbar from "@/components/Navbar";
 import Input from "@/components/Input";
 import Footer from "@/components/Footer";
 import ReturnedFunction from "@/components/ReturnedFunction";
-import { analyzeABI, functionType } from "@/functionality/analyzeABI";
-import { ABI } from "@/constants/constants";
+import {
+  analyzeABI,
+  contractDataType,
+  functionType,
+} from "@/functionality/analyzeABI";
+import { ABI, Registery_ABI, Registery_address } from "@/constants/constants";
+import { useAccount, useContract, useProvider } from "wagmi";
+import { Contract, Wallet } from "ethers";
+import { storeContract } from "@/functionality/storeData";
+
+const explorerLink = "";
+const private_key: any = process.env.NEXT_PUBLIC_PRIVATE_KEY;
 
 const Explorer = () => {
   const [readFunctions, setReadFunctions] = useState<functionType[]>();
   const [writeFunctions, setWriteFunctions] = useState<functionType[]>();
   const [showType, setShowType] = useState<string>();
   const [constructors, setConstructors] = useState<functionType[]>();
+  const [contractExists, setContractExists] = useState<boolean>();
+  const [contractData, setContractData] = useState<contractDataType>();
   const [contractAddress, setContractAddress] = useState<string>(
-    "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+    "0x97D17b1D164fb152186ace55bB1503d85b83F767"
   );
+  const [ipfsURI, setIpfsURI] = useState<string>();
   const [isReadActive, setIsReadActive] = useState(false);
   const [isWriteActive, setIsWriteActive] = useState(false);
-  async function getData() {
-    const data = await analyzeABI(ABI);
-    // console.log(data);
+
+  const { address } = useAccount();
+  const provider = useProvider();
+  const Registery_Contract = useContract({
+    address: Registery_address,
+    abi: Registery_ABI,
+    signerOrProvider: provider,
+  });
+
+  async function searchContract() {
+    if (!contractAddress) return;
+    try {
+      const response = await Registery_Contract?.getContractRecord(
+        contractAddress
+      );
+      console.log(response);
+      if (!response) {
+        console.log("Contract does not exist");
+        setContractExists(false);
+        return;
+        /// notify that Contract doesnot Exists
+      }
+      setIpfsURI(response);
+      setContractExists(true);
+      fetchContractData(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function fetchContractData(ipfsURL: string) {
+    const contractData = await (await fetch(ipfsURL)).json();
+    console.log(contractData);
+
+    if (!contractData) {
+      console.log("Contract Data not found");
+      return;
+    }
+
+    setContractData(contractData);
+    getData(contractData.abi);
+  }
+
+  /// issue with the ABI type
+  async function getData(abi: any[]) {
+    const data = await analyzeABI(abi);
+    console.log(data);
     setReadFunctions(data?.read);
     setWriteFunctions(data?.write);
   }
 
-  useEffect(() => {
-    getData();
-  }, []);
+  // now handle for the contract that does not exists
+  // send the user to deploy page but with a contractAddress , so that it will not deploy the contract again and verify the contract
 
   return (
     <main className="bg-black min-h-[100vh]">
@@ -35,17 +91,33 @@ const Explorer = () => {
       </h1>
       <div className="mx-auto max-w-xl mb-10 px-4">
         <p className="pb-3 text-white text-xl">Paste Contract Address here</p>
-        <Input />
+        <Input
+          input={contractAddress}
+          setInput={setContractAddress}
+          search={searchContract}
+        />
         <div className="flex justify-evenly py-10">
           <button
-            className={`text-white text-lg focus:border-t-2 ${isReadActive ? "border-t-2" : "none"}`}
-            onClick={() => {setShowType("read"); setIsReadActive(true); setIsWriteActive(false)}}
+            className={`text-white text-lg focus:border-t-2 ${
+              isReadActive ? "border-t-2" : "none"
+            }`}
+            onClick={() => {
+              setShowType("read");
+              setIsReadActive(true);
+              setIsWriteActive(false);
+            }}
           >
             Read Contract
           </button>
           <button
-            className={`text-white text-lg focus:border-t-2 ${isWriteActive ? "border-t-2" : "none"}`}
-            onClick={() => {setShowType("write"); setIsWriteActive(true); setIsReadActive(false)}}
+            className={`text-white text-lg focus:border-t-2 ${
+              isWriteActive ? "border-t-2" : "none"
+            }`}
+            onClick={() => {
+              setShowType("write");
+              setIsWriteActive(true);
+              setIsReadActive(false);
+            }}
           >
             Write Contract
           </button>
