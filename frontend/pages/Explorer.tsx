@@ -12,8 +12,8 @@ import { ABI, Registery_ABI, Registery_address } from "@/constants/constants";
 import { useAccount, useContract, useProvider } from "wagmi";
 import { Contract, Wallet } from "ethers";
 import { storeContract } from "@/functionality/storeData";
+import { explorerLink } from "@/constants/constants";
 
-const explorerLink = "";
 const private_key: any = process.env.NEXT_PUBLIC_PRIVATE_KEY;
 
 const Explorer = () => {
@@ -44,7 +44,7 @@ const Explorer = () => {
       const response = await Registery_Contract?.getContractRecord(
         contractAddress
       );
-      console.log(response);
+      // console.log(response);
       if (!response) {
         console.log("Contract does not exist");
         setContractExists(false);
@@ -61,7 +61,7 @@ const Explorer = () => {
 
   async function fetchContractData(ipfsURL: string) {
     const contractData = await (await fetch(ipfsURL)).json();
-    console.log(contractData);
+    // console.log(contractData);
 
     if (!contractData) {
       console.log("Contract Data not found");
@@ -75,7 +75,7 @@ const Explorer = () => {
   /// issue with the ABI type
   async function getData(abi: any[]) {
     const data = await analyzeABI(abi);
-    console.log(data);
+    // console.log(data);
     setReadFunctions(data?.read);
     setWriteFunctions(data?.write);
   }

@@ -1,6 +1,8 @@
 ## Current Issues
 
 --> input Arg Conversion depending upon on the type of the arg , only Value needs to be changed and checked
+--> Ouput formatting in Explorer
+--> Deployed contract verfication
 --> Send the Arg with the contract deployement
 --> API creation
 

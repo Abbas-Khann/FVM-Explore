@@ -148,6 +148,8 @@ export const Registery_ABI = [
   },
 ];
 
+export const explorerLink = "";
+
 export const ABI = [
   {
     constant: true,

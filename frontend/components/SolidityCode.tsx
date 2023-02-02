@@ -6,8 +6,7 @@ import { analyzeABI, functionType } from "@/functionality/analyzeABI";
 import { storeContract } from "@/functionality/storeData";
 import { Contract, Wallet } from "ethers";
 import { Registery_ABI, Registery_address } from "@/constants/constants";
-
-const explorerLink = "";
+import { explorerLink } from "@/constants/constants";
 const private_key: any = process.env.NEXT_PUBLIC_PRIVATE_KEY;
 
 const Code = () => {

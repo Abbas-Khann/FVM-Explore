@@ -1,3 +1,4 @@
+import { explorerLink } from "@/constants/constants";
 import { argType, functionType } from "@/functionality/analyzeABI";
 import { utils, ethers } from "ethers";
 import React, { useEffect, useState } from "react";
@@ -19,6 +20,8 @@ const ReturnedFunction = (props: any) => {
   const [argOutputs, setArgOutputs] = useState<any[]>([]);
   const [outputs, setOutputs] = useState<argType[]>();
   const [ifPayable, setIfPayable] = useState<boolean>(false);
+  const [txData, setTxData] = useState<{}>();
+  const [txLink, setTxLink] = useState<string>();
   const data = props.functionData;
   const contractAddress = props.contractAddress;
 
@@ -37,54 +40,69 @@ const ReturnedFunction = (props: any) => {
   }
 
   async function handleSubmit() {
-    const abiInterface = new ethers.utils.Interface([data]);
+    try {
+      const abiInterface = new ethers.utils.Interface([data]);
 
-    const encodedData = abiInterface.encodeFunctionData(
-      `${data.name}`,
-      argInputs
-    );
+      const encodedData = abiInterface.encodeFunctionData(
+        `${data.name}`,
+        argInputs
+      );
 
-    const tx = {
-      to: contractAddress,
-      data: encodedData,
-    };
+      const tx = {
+        to: contractAddress,
+        data: encodedData,
+      };
 
-    if (data.stateMutability == "view") {
-      // read tx
-      const txdata = await provider.call(tx);
+      if (data.stateMutability == "view") {
+        // read tx
+        const txdata = await provider.call(tx);
+        console.log(txdata);
 
-      const decoded = abiInterface.decodeFunctionData(`${data.name}`, txdata);
+        const decoded: any = abiInterface.decodeFunctionResult(
+          `${data.name}`,
+          txdata
+        );
 
-      console.log(txdata, decoded);
+        /// Error handling not checked
 
-      //   const {
-      //     data: readData,
-      //     isError,
-      //     isLoading,
-      //   } = useContractRead({
-      //     address: "0xecb504d39723b0be0e3a9aa33d646642d1051ee1",
-      //     abi: [data],
-      //     functionName: `${data.name}`,
-      //     args: argInputs,
-      //   });
-    } else if (data.stateMutability != "view") {
-      //   const { config, error } = usePrepareSendTransaction({
-      //     request: {
-      //       to: contractAddress,
-      //       data: encodedData,
-      //       value: ethers.utils.parseEther(value),
-      //     },
-      //   });
-      //   const { data: txData, sendTransaction } = useSendTransaction(config);
-      //   sendTransaction?.();
-      //   const { isLoading } = useWaitForTransaction({
-      //     hash: data?.hash,
-      //   });
+        console.log(decoded);
 
-      // send write transaction
-      const txdata = await signer?.sendTransaction(tx);
+        if (!decoded) {
+          console.log("No Output recieved");
+          return;
+        }
 
-      console.log(txdata);
+        // output Formatting needs to be done
+        let formattedOutput;
+        /// for int
+        formattedOutput = parseInt(decoded);
+        console.log(formattedOutput);
+
+        /// for Address , String
+        // formattedOutput = decoded;
+
+        // pushing the results
+        let currOutput = argOutputs;
+        currOutput?.push(formattedOutput);
+        setArgOutputs(currOutput);
+
+        // results not showing up on the page on the first reload
+      } else if (data.stateMutability != "view") {
+        // send write transaction
+        const txRes = await signer?.sendTransaction(tx);
+
+        console.log(txRes);
+
+        const txLink = `${explorerLink}/tx/${txRes?.hash}`;
+
+        console.log(`Tx completed with the link ${txLink}`);
+        //// show the tx data in the frontend
+        setTxData(txRes);
+      }
+    } catch (error) {
+      console.log(error);
+
+      /// alert user with the error display on the page
     }
   }
 
@@ -133,14 +151,24 @@ const ReturnedFunction = (props: any) => {
         >
           Submit
         </button>
+
+        {txLink && <h2>{txLink}</h2>}
       </div>
       {/* returned value */}
-      {/* <div className="py-3">
-        <h2 className="break-all">
+      <div className="py-3">
+        {outputs &&
+          outputs.map((output, key) => {
+            return (
+              <>
+                <h1>{output.name ? output.name : "output :"}</h1>
+                <h2>{argOutputs[key]}</h2>
+              </>
+            );
+          })}
+        {/* <h2 className="break-all">
           0x7B4A8d0862F049E35078E49F2561630Fac079eB9
-        </h2>
-        <h2>123</h2>
-      </div> */}
+        </h2> */}
+      </div>
     </div>
   );
 };
