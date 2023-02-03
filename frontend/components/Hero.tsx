@@ -15,7 +15,7 @@ const Hero = () => {
             animate-text">FVM-Explore</span>
           </h2>
           <p className="sm:mt-10 text-base text-skin-muted dark:text-skin-darkMuted lg:text-2xl sm:mb-14 mb-10">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi eum sint tenetur beatae magni maxime accusamus ipsum rerum deserunt saepe.
+           Interact with your smart contracts with ease in a user-friendly interface, without the requirement of any technical knowledge with the FVM-Chain.
           </p>
           <div
           className="flex flex-col sm:flex-row"
