@@ -44,6 +44,12 @@ const Explorer = () => {
       const response = await Registery_Contract?.getContractRecord(
         contractAddress
       );
+      toast({
+        title: "Address fetched!!!",
+        status: "success",
+        duration: 2000,
+        isClosable: true
+      })
       // console.log(response);
       if (!response) {
         toast({
@@ -61,7 +67,13 @@ const Explorer = () => {
       setIpfsURI(response);
       setContractExists(true);
       fetchContractData(response);
-    } catch (error) {
+    } catch (error: any) {
+      toast({
+        title: `${error.reason}`,
+        status: "error",
+        duration: 2000,
+        isClosable: true
+      })
       console.log(error);
     }
   }
