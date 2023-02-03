@@ -17,6 +17,7 @@ import {
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
 import { Lato } from "@next/font/google";
+import { ChakraProvider } from '@chakra-ui/react';
 
 const lato = Lato({
   subsets: ["latin"],
@@ -55,7 +56,9 @@ export default function App({ Component, pageProps }: AppProps) {
             fontStack: "rounded",
           })}
         >
+          <ChakraProvider>
           <Component {...pageProps} />
+          </ChakraProvider>
         </RainbowKitProvider>
       </main>
     </WagmiConfig>

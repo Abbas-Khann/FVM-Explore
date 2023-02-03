@@ -7,13 +7,15 @@ import { storeContract } from "@/functionality/storeData";
 import { Contract, ContractFactory, Wallet, ethers } from "ethers";
 import { Registery_ABI, Registery_address } from "@/constants/constants";
 import { explorerLink } from "@/constants/constants";
+import { useToast } from "@chakra-ui/react";
+
 const private_key: any = process.env.NEXT_PUBLIC_PRIVATE_KEY;
 
 const Code = () => {
   const { address } = useAccount();
   const provider = useProvider();
-  const { data: signer }: any = useSigner();
-
+  const { data: signer, isLoading }: any = useSigner();
+  const toast = useToast();
   const [contractName, setContractName] = useState<string>("");
   const [sourceCode, setSourceCode] = useState<string>();
   const [output, setOutput] = useState<{ abi: any[]; bytecode: string }>();
@@ -38,7 +40,14 @@ const Code = () => {
   /// contract with imports have to be managed , not yet handled
   async function handleCompile() {
     if (!sourceCode) {
-      console.log("no Source code set");
+      toast({
+        title: "No source code",
+        description: "You need to provide source code to perform compilation!!!",
+        status: "warning",
+        duration: 2000,
+        isClosable: true
+      })
+      // console.log("no Source code set");
       return;
     }
 
@@ -53,11 +62,18 @@ const Code = () => {
 
     console.log(response);
     const formattedResponse = (await response.json()).output;
-    console.log(formattedResponse);
+    // console.log(formattedResponse, "formatted response");
 
     if (response.status == 200) {
       setOutput(formattedResponse);
-      console.log("Successfully Compiled");
+      toast({
+        title: "Compilation successful",
+        description: "Your code was compiled succesfully, You can deploy your contract now.",
+        status: "success",
+        duration: 2000,
+        isClosable: true
+      })
+      // console.log("Successfully Compiled");
       setError("Successfully Compiled");
       /// analyze the ABI and show const
       handleABI(formattedResponse.abi);
@@ -65,6 +81,13 @@ const Code = () => {
       setCompiled(true);
     } else {
       setError(formattedResponse);
+      toast({
+        title: "Compilation error",
+        description: `${formattedResponse}`,
+        status: "error",
+        duration: 2700,
+        isClosable: true
+      });
     }
   }
 
@@ -78,7 +101,14 @@ const Code = () => {
   async function handleDeploy() {
     /// checking if the contract is compiled
     if (!output?.bytecode) {
-      console.log("Compile the Contract first");
+      toast({
+        title: "Contract Not Compiled!!!",
+        description: "Make sure the contract is compiled before proceeding with this process",
+        status: "error",
+        duration: 2700,
+        isClosable: true
+      });
+      // console.log("Compile the Contract first");
       setError("Compile the Contract first");
       return;
     }
@@ -87,13 +117,29 @@ const Code = () => {
     if (constructorArg[0].inputs?.length) {
       console.log(argInputs);
       if (!argInputs) {
-        console.log("Add the Constructor Arguements");
+        toast({
+          title: "No Arguments provided",
+          description: `Fill in the constructor arguments in order to deploy this contract`,
+          status: "error",
+          duration: 2500,
+          isClosable: true
+        })
+        // console.log("Add the Constructor Arguements")
         setError("Add the Constructor Arguements");
         return;
       }
     }
 
     console.log("deploying...");
+    // toast here
+    toast({
+      title: "Deploying Contract....",
+      description: `Your contract is being deployed`,
+      status: "loading",
+      duration: 2500,
+      isClosable: true
+    });
+
     const factory = new ContractFactory(output.abi, output.bytecode, signer);
 
     let contract;
@@ -114,11 +160,24 @@ const Code = () => {
     const deployTx = contract.deployTransaction;
 
     const contractLink = `${explorerLink}/contract/${deployedContractAddress}`;
-    console.log(`Contract Created with the address${contractLink}`);
+    toast({
+      title: "Contract Deployed!!!",
+      description: `Contract created with the address ${deployedContractAddress}`,
+      status: "success",
+      duration: 5000,
+      isClosable: true
+    })
+    // console.log(`Contract Created with the address${contractLink}`);
 
     const txLink = `${explorerLink}/tx/${deployTx.hash}`;
     console.log(txLink);
-
+    toast({
+      title: "Transaction Hash",
+      description: `${deployTx.hash}`,
+      status: "info",
+      duration: 5000,
+      isClosable: true    
+    })
     ///Show the tx
     setTxLink(txLink);
   }
@@ -126,8 +185,15 @@ const Code = () => {
   async function verifyContract() {
     /// store the contract info on the Web3.storage and add the data , CID to a Contract or Web2 Database
     if (!output && !contractAddress) {
-      console.log("Compile & Deploy the Contract first");
-      setError("Compile & Deploy  the Contract first");
+      toast({
+        title: "Contract Not Compiled OR Deployed!!!",
+        description: `This contract is either not deployed or compiled, which is necessary for contract verification`,
+        status: "error",
+        duration: 2800,
+        isClosable: true
+      })
+      // console.log("Compile & Deploy the Contract first");
+      setError("Compile & Deploy the Contract first");
       return;
     }
 
@@ -139,24 +205,43 @@ const Code = () => {
       bytecode: output?.bytecode,
       code: sourceCode,
     };
-
+    toast({
+      title: "Uploading to IPFS...",
+      status: "loading",
+      duration: 2000,
+      isClosable: true
+    })
     const CID = await storeContract(contractData);
     const IPFSURL = `https://w3s.link/ipfs/${CID}`;
-    console.log(IPFSURL);
+    console.log(IPFSURL, 'IPFSURL');
     setIpfsLink(IPFSURL);
-
+    toast({
+      title: "IPFS URL",
+      description: `${IPFSURL}`,
+      status: "success",
+      duration: 2800,
+      isClosable: true
+    })
     /// Store the IPFS link somewhere
 
     const tx = await registery_contract.addContractRecord(
       contractAddress,
       IPFSURL
     );
-
+      toast({
+        title: "Adding Contract to Registry",
+        status: "loading",
+        duration: 2500,
+        isClosable: true
+      })
     await tx.wait();
-
-    console.log(tx);
-
-    console.log("Record Added in the registery");
+    // console.log("Record Added in the registery");
+    toast({
+      title: "Record Added in the Registry",
+      status: "success",
+      duration: 3000,
+      isClosable: true
+    })
   }
 
   return (
@@ -179,7 +264,6 @@ const Code = () => {
           setEth={setEthValue}
         />
       )}
-      {error && <p className="text-white">{error}</p>}
       <button
         onClick={() => handleCompile()}
         className="bg-gradient-to-t from-[#201CFF] to-[#C41CFF] py-2 px-10 hover:bg-gradient-to-b from-[#201CFF] to-[#C41CFF] sm:mr-10 mb-5 text-white"

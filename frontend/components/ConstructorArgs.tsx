@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 const ConstructorArguments = (props: any) => {
   const [cInputs, setCInputs] = useState<argType[]>();
   const [constructorData, setConstructorData] = useState<functionType>();
-
   /// handle the value send thing
 
   async function handle() {
