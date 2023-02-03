@@ -13,6 +13,7 @@ import { useAccount, useContract, useProvider } from "wagmi";
 import { Contract, Wallet } from "ethers";
 import { storeContract } from "@/functionality/storeData";
 import { explorerLink } from "@/constants/constants";
+import { useToast } from "@chakra-ui/react";
 
 const private_key: any = process.env.NEXT_PUBLIC_PRIVATE_KEY;
 
@@ -35,6 +36,7 @@ const Explorer = () => {
     abi: Registery_ABI,
     signerOrProvider: provider,
   });
+  const toast = useToast();
 
   async function searchContract() {
     if (!contractAddress) return;
@@ -44,7 +46,14 @@ const Explorer = () => {
       );
       // console.log(response);
       if (!response) {
-        console.log("Contract does not exist");
+        toast({
+          title: "Contract does not exist",
+          description: "This contract does not exist in our registry",
+          status: "error",
+          duration: 2000,
+          isClosable: true
+        })
+        // console.log("Contract does not exist");
         setContractExists(false);
         return;
         /// notify that Contract doesnot Exists
@@ -62,10 +71,15 @@ const Explorer = () => {
     // console.log(contractData);
 
     if (!contractData) {
-      console.log("Contract Data not found");
+      toast({
+        title: "Contract Data not found",
+        status: "error",
+        duration: 2000,
+        isClosable: true
+      })
+      // console.log("Contract Data not found");
       return;
     }
-
     /// has bytecode , abi , code
     setContractData(contractData);
     getData(contractData.abi);

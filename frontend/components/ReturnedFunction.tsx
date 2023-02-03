@@ -161,7 +161,7 @@ const ReturnedFunction = (props: any) => {
   }, []);
 
   return (
-    <div className="flex flex-col w-[318px] pb-5 bg-gray-300 px-8 border-t-8 border-orange-400 rounded-t-lg my-10 mx-10 bg-gray-800 text-white">
+    <div className="flex flex-col justify-around w-[318px] h-[320px] pb-5 bg-gray-300 px-8 border-t-8 border-orange-400 rounded-lg my-10 mx-10 bg-gray-800 text-white">
       <h4 className="text-white text-xl py-2">{data.name}</h4>
       {ifPayable && (
         <>
@@ -205,15 +205,15 @@ const ReturnedFunction = (props: any) => {
         {outputs &&
           outputs.map((output, key) => {
             return (
-              <>
-                <h1>{output.name ? output.name : "output :"}</h1>
+              <div className="flex  items-center justify-between text-xl">
+                <h1 className="text-lg">{output.name ? output.name : "output :"}</h1>
                 <h2>
                   {/* {output.type == "uint256"
                     ? parseInt(argOutputs[key])
                     : argOutputs[key]} */}
                   {handleOutput(output, argOutputs[key])}
                 </h2>
-              </>
+              </div>
             );
           })}
         {/* <h2 className="break-all">
