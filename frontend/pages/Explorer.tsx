@@ -14,10 +14,13 @@ import { Contract, Wallet } from "ethers";
 import { storeContract } from "@/functionality/storeData";
 import { explorerLink } from "@/constants/constants";
 import { useToast } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 
 const private_key: any = process.env.NEXT_PUBLIC_PRIVATE_KEY;
 
 const Explorer = () => {
+  const router = useRouter();
+
   const [readFunctions, setReadFunctions] = useState<functionType[]>();
   const [writeFunctions, setWriteFunctions] = useState<functionType[]>();
   const [showType, setShowType] = useState<string>();
@@ -38,6 +41,13 @@ const Explorer = () => {
   });
   const toast = useToast();
 
+  useEffect(() => {
+    const queryAddress: any = router.query.address;
+    if (queryAddress) {
+      setContractAddress(queryAddress);
+    }
+  }, [router.query]);
+
   async function searchContract() {
     if (!contractAddress) return;
     try {
@@ -48,8 +58,8 @@ const Explorer = () => {
         title: "Address fetched!!!",
         status: "success",
         duration: 2000,
-        isClosable: true
-      })
+        isClosable: true,
+      });
       // console.log(response);
       if (!response) {
         toast({
@@ -57,8 +67,8 @@ const Explorer = () => {
           description: "This contract does not exist in our registry",
           status: "error",
           duration: 2000,
-          isClosable: true
-        })
+          isClosable: true,
+        });
         // console.log("Contract does not exist");
         setContractExists(false);
         return;
@@ -72,8 +82,8 @@ const Explorer = () => {
         title: `${error.reason}`,
         status: "error",
         duration: 2000,
-        isClosable: true
-      })
+        isClosable: true,
+      });
       console.log(error);
     }
   }
@@ -87,8 +97,8 @@ const Explorer = () => {
         title: "Contract Data not found",
         status: "error",
         duration: 2000,
-        isClosable: true
-      })
+        isClosable: true,
+      });
       // console.log("Contract Data not found");
       return;
     }

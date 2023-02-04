@@ -2,6 +2,7 @@
 //   const code = readFileSync(path,'utf8');
 
 import { ContractFactory } from "ethers";
+import { AbiCoder, defaultAbiCoder } from "ethers/lib/utils.js";
 
 // }
 
@@ -40,7 +41,13 @@ export async function compileContract(code) {
   }
 }
 
-export async function deploy(bytecode, address) {
+/// Example
+// [ "uint", "string" ], [ 1234, "Hello World" ]
+export async function encodeConArgs(types, values) {
+  defaultAbiCoder.encode(types, values);
+}
+
+export async function deploy(bytecode, address, paramEncoded) {
   ethereum
     .request({
       method: "eth_sendTransaction",
@@ -48,7 +55,7 @@ export async function deploy(bytecode, address) {
         {
           from: address,
           gas: "0x2DC6C0",
-          data: bytecode,
+          data: bytecode + paramEncoded,
         },
       ],
     })
