@@ -14,7 +14,7 @@ const private_key: any = process.env.NEXT_PUBLIC_PRIVATE_KEY;
 const Code = () => {
   const { address } = useAccount();
   const provider = useProvider();
-  const { data: signer, isLoading }: any = useSigner();
+  const { data: signer }: any = useSigner();
   const toast = useToast();
   const [contractName, setContractName] = useState<string>("");
   const [sourceCode, setSourceCode] = useState<string>();
@@ -67,7 +67,7 @@ const Code = () => {
     if (response.status == 200) {
       setOutput(formattedResponse);
       toast({
-        title: "Compilation successful",
+        title: "Compilation successfull",
         description: "Your code was compiled succesfully, You can deploy your contract now.",
         status: "success",
         duration: 2000,
@@ -158,15 +158,16 @@ const Code = () => {
     const deployedContractAddress = contract.address;
     setContractAddress(deployedContractAddress);
     const deployTx = contract.deployTransaction;
-
+    
     const contractLink = `${explorerLink}/contract/${deployedContractAddress}`;
     toast({
       title: "Contract Deployed!!!",
-      description: `Contract created with the address ${deployedContractAddress}`,
+      description: `Contract created with the address Copied to clipboard ${deployedContractAddress}`,
       status: "success",
       duration: 5000,
       isClosable: true
     })
+    navigator.clipboard.writeText(deployedContractAddress);
     // console.log(`Contract Created with the address${contractLink}`);
 
     const txLink = `${explorerLink}/tx/${deployTx.hash}`;
@@ -264,6 +265,7 @@ const Code = () => {
           setEth={setEthValue}
         />
       )}
+      <div className="flex items-center justify-between flex-col sm:flex-row">
       <button
         onClick={() => handleCompile()}
         className="bg-gradient-to-t from-[#201CFF] to-[#C41CFF] py-2 px-10 hover:bg-gradient-to-b from-[#201CFF] to-[#C41CFF] sm:mr-10 mb-5 text-white"
@@ -278,12 +280,15 @@ const Code = () => {
           Deploy
         </button>
       )}
-      <button
+      {compiled && (
+        <button
         onClick={() => verifyContract()}
         className="bg-gradient-to-t from-[#201CFF] to-[#C41CFF] py-2 px-10 hover:bg-gradient-to-b from-[#201CFF] to-[#C41CFF] sm:mr-10 mb-5 text-white"
-      >
+        >
         Verify
       </button>
+        )}
+      </div>
     </div>
   );
 };
