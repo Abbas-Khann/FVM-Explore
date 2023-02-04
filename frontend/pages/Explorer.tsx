@@ -165,7 +165,7 @@ const Explorer = () => {
               return (
                 <ReturnedFunction
                   functionData={readFunction}
-                  id={key}
+                  key={key}
                   contractAddress={contractAddress}
                 />
               );
@@ -179,7 +179,7 @@ const Explorer = () => {
               return (
                 <ReturnedFunction
                   functionData={writeFunction}
-                  id={key}
+                  key={key}
                   contractAddress={contractAddress}
                 />
               );

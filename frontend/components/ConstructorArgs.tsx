@@ -42,6 +42,7 @@ const ConstructorArguments = (props: any) => {
         cInputs.map((input, key) => {
           return (
             <input
+              key={key}
               placeholder={input.name}
               className="px-1 py-1 mb-2 text-black rounded-md"
               onChange={(e) => handleInput(e.target.value, key)}

@@ -177,6 +177,7 @@ const ReturnedFunction = (props: any) => {
         inputs.map((input, key) => {
           return (
             <input
+              key={key}
               onChange={(e) => handleInput(e.target.value, key)}
               placeholder={input.name}
               className="px-1 py-1 mb-4 bg-[#D1D7D9] text-black outline-none rounded-sm"
@@ -205,8 +206,13 @@ const ReturnedFunction = (props: any) => {
         {outputs &&
           outputs.map((output, key) => {
             return (
-              <div className="flex  items-center justify-between text-xl">
-                <h1 className="text-lg">{output.name ? output.name : "output :"}</h1>
+              <div
+                key={key}
+                className="flex  items-center justify-between text-xl"
+              >
+                <h1 className="text-lg">
+                  {output.name ? output.name : "output :"}
+                </h1>
                 <h2>
                   {/* {output.type == "uint256"
                     ? parseInt(argOutputs[key])
