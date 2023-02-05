@@ -8,7 +8,7 @@ import {
   contractDataType,
   functionType,
 } from "@/functionality/analyzeABI";
-import { ABI, Registery_ABI, Registery_address } from "@/constants/constants";
+import { Registery_ABI, Registery_address } from "@/constants/constants";
 import { useAccount, useContract, useProvider } from "wagmi";
 import { Contract, Wallet } from "ethers";
 import { storeContract } from "@/functionality/storeData";
@@ -105,6 +105,8 @@ const Explorer = () => {
     /// has bytecode , abi , code
     setContractData(contractData);
     getData(contractData.abi);
+
+    //set default to the contract Tab and show all the data there
   }
 
   /// issue with the ABI type

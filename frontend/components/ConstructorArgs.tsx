@@ -44,6 +44,8 @@ const ConstructorArguments = (props: any) => {
             <input
               key={key}
               placeholder={input.name}
+              value={props.inputs[key]}
+              // type={getType(input.type)}
               className="px-1 py-1 mb-2 text-black rounded-md"
               onChange={(e) => handleInput(e.target.value, key)}
             />

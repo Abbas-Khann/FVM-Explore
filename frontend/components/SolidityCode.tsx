@@ -20,7 +20,7 @@ const Code = () => {
   const [sourceCode, setSourceCode] = useState<string>();
   const [output, setOutput] = useState<{ abi: any[]; bytecode: string }>();
   const [constructorArg, setConstructorArg] = useState<any>();
-  const [argInputs, setArgInputs] = useState<any[]>();
+  const [argInputs, setArgInputs] = useState<any[]>([]);
   const [ethValue, setEthValue] = useState<string>();
 
   const [contractAddress, setContractAddress] = useState<string>();
@@ -42,11 +42,12 @@ const Code = () => {
     if (!sourceCode) {
       toast({
         title: "No source code",
-        description: "You need to provide source code to perform compilation!!!",
+        description:
+          "You need to provide source code to perform compilation!!!",
         status: "warning",
         duration: 2000,
-        isClosable: true
-      })
+        isClosable: true,
+      });
       // console.log("no Source code set");
       return;
     }
@@ -68,11 +69,12 @@ const Code = () => {
       setOutput(formattedResponse);
       toast({
         title: "Compilation successfull",
-        description: "Your code was compiled succesfully, You can deploy your contract now.",
+        description:
+          "Your code was compiled succesfully, You can deploy your contract now.",
         status: "success",
         duration: 2000,
-        isClosable: true
-      })
+        isClosable: true,
+      });
       // console.log("Successfully Compiled");
       setError("Successfully Compiled");
       /// analyze the ABI and show const
@@ -86,7 +88,7 @@ const Code = () => {
         description: `${formattedResponse}`,
         status: "error",
         duration: 2700,
-        isClosable: true
+        isClosable: true,
       });
     }
   }
@@ -103,10 +105,11 @@ const Code = () => {
     if (!output?.bytecode) {
       toast({
         title: "Contract Not Compiled!!!",
-        description: "Make sure the contract is compiled before proceeding with this process",
+        description:
+          "Make sure the contract is compiled before proceeding with this process",
         status: "error",
         duration: 2700,
-        isClosable: true
+        isClosable: true,
       });
       // console.log("Compile the Contract first");
       setError("Compile the Contract first");
@@ -114,7 +117,7 @@ const Code = () => {
     }
 
     /// checking if the contructor has arg
-    if (constructorArg[0].inputs?.length) {
+    if (constructorArg[0]?.inputs?.length) {
       console.log(argInputs);
       if (!argInputs) {
         toast({
@@ -122,8 +125,8 @@ const Code = () => {
           description: `Fill in the constructor arguments in order to deploy this contract`,
           status: "error",
           duration: 2500,
-          isClosable: true
-        })
+          isClosable: true,
+        });
         // console.log("Add the Constructor Arguements")
         setError("Add the Constructor Arguements");
         return;
@@ -137,14 +140,15 @@ const Code = () => {
       description: `Your contract is being deployed`,
       status: "loading",
       duration: 2500,
-      isClosable: true
+      isClosable: true,
     });
 
     const factory = new ContractFactory(output.abi, output.bytecode, signer);
 
     let contract;
     //handle args
-    if (argInputs) {
+    console.log(argInputs);
+    if (argInputs.length) {
       contract = await factory.deploy(argInputs, {
         value: ethValue ? ethers.utils.parseEther(ethValue) : 0,
       });
@@ -158,15 +162,16 @@ const Code = () => {
     const deployedContractAddress = contract.address;
     setContractAddress(deployedContractAddress);
     const deployTx = contract.deployTransaction;
-    
+
     const contractLink = `${explorerLink}/contract/${deployedContractAddress}`;
+
     toast({
       title: "Contract Deployed!!!",
       description: `Contract created with the address Copied to clipboard ${deployedContractAddress}`,
       status: "success",
       duration: 5000,
-      isClosable: true
-    })
+      isClosable: true,
+    });
     navigator.clipboard.writeText(deployedContractAddress);
     // console.log(`Contract Created with the address${contractLink}`);
 
@@ -174,11 +179,11 @@ const Code = () => {
     console.log(txLink);
     toast({
       title: "Transaction Hash",
-      description: `${deployTx.hash}`,
+      description: `${txLink}`,
       status: "info",
       duration: 5000,
-      isClosable: true    
-    })
+      isClosable: true,
+    });
     ///Show the tx
     setTxLink(txLink);
   }
@@ -191,8 +196,8 @@ const Code = () => {
         description: `This contract is either not deployed or compiled, which is necessary for contract verification`,
         status: "error",
         duration: 2800,
-        isClosable: true
-      })
+        isClosable: true,
+      });
       // console.log("Compile & Deploy the Contract first");
       setError("Compile & Deploy the Contract first");
       return;
@@ -210,39 +215,39 @@ const Code = () => {
       title: "Uploading to IPFS...",
       status: "loading",
       duration: 2000,
-      isClosable: true
-    })
+      isClosable: true,
+    });
     const CID = await storeContract(contractData);
     const IPFSURL = `https://w3s.link/ipfs/${CID}`;
-    console.log(IPFSURL, 'IPFSURL');
+    console.log(IPFSURL, "IPFSURL");
     setIpfsLink(IPFSURL);
     toast({
       title: "IPFS URL",
       description: `${IPFSURL}`,
       status: "success",
       duration: 2800,
-      isClosable: true
-    })
+      isClosable: true,
+    });
     /// Store the IPFS link somewhere
 
     const tx = await registery_contract.addContractRecord(
       contractAddress,
       IPFSURL
     );
-      toast({
-        title: "Adding Contract to Registry",
-        status: "loading",
-        duration: 2500,
-        isClosable: true
-      })
+    toast({
+      title: "Adding Contract to Registry",
+      status: "loading",
+      duration: 2500,
+      isClosable: true,
+    });
     await tx.wait();
     // console.log("Record Added in the registery");
     toast({
       title: "Record Added in the Registry",
       status: "success",
       duration: 3000,
-      isClosable: true
-    })
+      isClosable: true,
+    });
   }
 
   return (
@@ -266,27 +271,27 @@ const Code = () => {
         />
       )}
       <div className="flex items-center justify-between flex-col sm:flex-row">
-      <button
-        onClick={() => handleCompile()}
-        className="bg-gradient-to-t from-[#201CFF] to-[#C41CFF] py-2 px-10 hover:bg-gradient-to-b from-[#201CFF] to-[#C41CFF] sm:mr-10 mb-5 text-white"
-      >
-        Compile
-      </button>
-      {compiled && (
         <button
-          onClick={() => handleDeploy()}
+          onClick={() => handleCompile()}
           className="bg-gradient-to-t from-[#201CFF] to-[#C41CFF] py-2 px-10 hover:bg-gradient-to-b from-[#201CFF] to-[#C41CFF] sm:mr-10 mb-5 text-white"
         >
-          Deploy
+          Compile
         </button>
-      )}
-      {compiled && (
-        <button
-        onClick={() => verifyContract()}
-        className="bg-gradient-to-t from-[#201CFF] to-[#C41CFF] py-2 px-10 hover:bg-gradient-to-b from-[#201CFF] to-[#C41CFF] sm:mr-10 mb-5 text-white"
-        >
-        Verify
-      </button>
+        {compiled && (
+          <button
+            onClick={() => handleDeploy()}
+            className="bg-gradient-to-t from-[#201CFF] to-[#C41CFF] py-2 px-10 hover:bg-gradient-to-b from-[#201CFF] to-[#C41CFF] sm:mr-10 mb-5 text-white"
+          >
+            Deploy
+          </button>
+        )}
+        {compiled && (
+          <button
+            onClick={() => verifyContract()}
+            className="bg-gradient-to-t from-[#201CFF] to-[#C41CFF] py-2 px-10 hover:bg-gradient-to-b from-[#201CFF] to-[#C41CFF] sm:mr-10 mb-5 text-white"
+          >
+            Verify
+          </button>
         )}
       </div>
     </div>
