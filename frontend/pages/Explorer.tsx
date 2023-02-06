@@ -15,6 +15,7 @@ import { storeContract } from "@/functionality/storeData";
 import { explorerLink } from "@/constants/constants";
 import { useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
+import ReturnedAbi from "@/components/ReturnedAbi";
 
 const private_key: any = process.env.NEXT_PUBLIC_PRIVATE_KEY;
 
@@ -42,7 +43,7 @@ const Explorer = () => {
     signerOrProvider: provider,
   });
   const toast = useToast();
-
+  console.log(showType, "showtype here")
   useEffect(() => {
     const queryAddress: any = router.query.address;
     if (queryAddress) {
@@ -107,7 +108,6 @@ const Explorer = () => {
     /// has bytecode , abi , code
     setContractData(contractData);
     getData(contractData.abi);
-
     //set default to the contract Tab and show all the data there
   }
 
@@ -117,8 +117,10 @@ const Explorer = () => {
     // console.log(data);
     setReadFunctions(data?.read);
     setWriteFunctions(data?.write);
+    
+    console.log(data, "getData")
   }
-
+  console.log(contractData)
   // now handle for the contract that does not exists
   // send the user to deploy page but with a contractAddress , so that it will not deploy the contract again and verify the contract
 
@@ -173,6 +175,7 @@ const Explorer = () => {
               setIsAbiActive(true)
               setIsWriteActive(false)
               setIsReadActive(false)
+              setIsSourceCodeActive(false)
             }}
           >
             Abi
@@ -223,6 +226,28 @@ const Explorer = () => {
       )}
 
 
+      {showType == "abi" && (
+        <div>
+          {contractData && (
+            <div className="flex items-center justify-center flex-col">
+              <ReturnedAbi 
+              contractData={contractData.abi}
+              />
+            </div>
+          )}
+        </div>
+      )}
+
+
+      {showType == "source" && (
+        <div>
+          {contractData && (
+            <div className="">
+              
+            </div>
+          )}
+        </div>
+      )}
       <Footer />
     </main>
   );
