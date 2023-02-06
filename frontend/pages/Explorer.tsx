@@ -15,7 +15,6 @@ import { storeContract } from "@/functionality/storeData";
 import { explorerLink } from "@/constants/constants";
 import { useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import ReturnedAbi from "@/components/ReturnedAbi";
 import ReturnedSourceCode from "@/components/ReturnedSourceCode";
 
 const private_key: any = process.env.NEXT_PUBLIC_PRIVATE_KEY;
@@ -33,7 +32,6 @@ const Explorer = () => {
   const [ipfsURI, setIpfsURI] = useState<string>();
   const [isReadActive, setIsReadActive] = useState<boolean>(false);
   const [isWriteActive, setIsWriteActive] = useState<boolean>(false);
-  const [isAbiActive,  setIsAbiActive] = useState<boolean>(false);
   const [isSourceCodeActive, setIsSourceCodeActive] = useState<boolean>(false);
 
   const { address } = useAccount();
@@ -147,7 +145,6 @@ const Explorer = () => {
               setShowType("read");
               setIsReadActive(true);
               setIsWriteActive(false);
-              setIsAbiActive(false)
               setIsSourceCodeActive(false)
             }}
           >
@@ -162,24 +159,9 @@ const Explorer = () => {
               setIsWriteActive(true);
               setIsReadActive(false);
               setIsSourceCodeActive(false);
-              setIsAbiActive(false)
             }}
           >
             Write Contract
-          </button>
-          <button
-            className={`text-white text-lg focus:border-t-2 ${
-              isAbiActive ? "border-t-2" : "none"
-            }`}
-            onClick={() => {
-              setShowType("abi");
-              setIsAbiActive(true)
-              setIsWriteActive(false)
-              setIsReadActive(false)
-              setIsSourceCodeActive(false)
-            }}
-          >
-            Abi
           </button>
           <button
             className={`text-white text-lg focus:border-t-2 ${
@@ -187,7 +169,6 @@ const Explorer = () => {
             }`}
             onClick={() => {
               setShowType("source");
-              setIsAbiActive(false)
               setIsSourceCodeActive(true)
               setIsReadActive(false);
               setIsWriteActive(false)
@@ -223,19 +204,6 @@ const Explorer = () => {
                 />
               );
             })}
-        </div>
-      )}
-
-
-      {showType == "abi" && (
-        <div>
-          {contractData && (
-            <div className="flex items-center justify-center flex-col">
-              <ReturnedAbi 
-              contractData={contractData.abi}
-              />
-            </div>
-          )}
         </div>
       )}
       {showType == "source" && (

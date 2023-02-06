@@ -107,7 +107,6 @@ const Code = () => {
       name: contractName,
       address: contractAddress,
       deployer: address,
-      abi: output?.abi,
       bytecode: output?.bytecode,
       code: sourceCode,
     };
