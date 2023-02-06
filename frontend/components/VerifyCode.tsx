@@ -39,11 +39,12 @@ const Code = () => {
     if (!sourceCode) {
       toast({
         title: "No source code",
-        description: "You need to provide source code to perform compilation!!!",
+        description:
+          "You need to provide source code to perform compilation!!!",
         status: "warning",
         duration: 2000,
-        isClosable: true
-      })
+        isClosable: true,
+      });
       // console.log("no Source code set");
       return;
     }
@@ -65,11 +66,12 @@ const Code = () => {
       setOutput(formattedResponse);
       toast({
         title: "Compilation successfull",
-        description: "Your code was compiled succesfully, You can deploy your contract now.",
+        description:
+          "Your code was compiled succesfully, You can deploy your contract now.",
         status: "success",
         duration: 2000,
-        isClosable: true
-      })
+        isClosable: true,
+      });
       // console.log("Successfully Compiled");
       setError("Successfully Compiled");
       /// analyze the ABI and show const
@@ -83,7 +85,7 @@ const Code = () => {
         description: `${formattedResponse}`,
         status: "error",
         duration: 2700,
-        isClosable: true
+        isClosable: true,
       });
     }
   }
@@ -96,8 +98,8 @@ const Code = () => {
         description: `This contract is either not deployed or compiled, which is necessary for contract verification`,
         status: "error",
         duration: 2800,
-        isClosable: true
-      })
+        isClosable: true,
+      });
       // console.log("Compile & Deploy the Contract first");
       setError("Compile & Deploy the Contract first");
       return;
@@ -107,53 +109,55 @@ const Code = () => {
       name: contractName,
       address: contractAddress,
       deployer: address,
+      abi: output?.abi,
       bytecode: output?.bytecode,
       code: sourceCode,
     };
+
     toast({
       title: "Uploading to IPFS...",
       status: "loading",
       duration: 2000,
-      isClosable: true
-    })
+      isClosable: true,
+    });
     const CID = await storeContract(contractData);
     const IPFSURL = `https://w3s.link/ipfs/${CID}`;
-    console.log(IPFSURL, 'IPFSURL');
+    console.log(IPFSURL, "IPFSURL");
     setIpfsLink(IPFSURL);
     toast({
       title: "IPFS URL",
       description: `${IPFSURL}`,
       status: "success",
       duration: 2800,
-      isClosable: true
-    })
+      isClosable: true,
+    });
     /// Store the IPFS link somewhere
 
     const tx = await registery_contract.addContractRecord(
       contractAddress,
       IPFSURL
     );
-      toast({
-        title: "Adding Contract to Registry",
-        status: "loading",
-        duration: 2500,
-        isClosable: true
-      })
+    toast({
+      title: "Adding Contract to Registry",
+      status: "loading",
+      duration: 2500,
+      isClosable: true,
+    });
     await tx.wait();
     // console.log("Record Added in the registery");
     toast({
       title: "Record Added in the Registry",
       status: "success",
       duration: 3000,
-      isClosable: true
-    })
+      isClosable: true,
+    });
   }
 
   return (
     <div className="flex items-center justify-center flex-col">
-      <p
-      className="text-center text-white font-bold text-xl text-skin-base my-4 leading-tight tracking-tighter mb-6 lg:tracking-normal"
-      >Enter the contract address</p>
+      <p className="text-center text-white font-bold text-xl text-skin-base my-4 leading-tight tracking-tighter mb-6 lg:tracking-normal">
+        Enter the contract address
+      </p>
       <input
         className="w-8/12 sm:w-6/12 mb-10 px-5 py-3 bg-gray-900 text-white text-xl rounded-xl"
         type="text"
@@ -169,20 +173,21 @@ const Code = () => {
       <textarea
         onChange={(e) => setSourceCode(e.target.value)}
         className="w-8/12 sm:w-6/12 h-[70vh] mb-10 p-10 bg-gray-900 text-white text-xl rounded-2xl"
-      />   <div className="flex items-center justify-between flex-col sm:flex-row">
-      <button
-        onClick={() => handleCompile()}
-        className="bg-gradient-to-t from-[#201CFF] to-[#C41CFF] py-2 px-10 hover:bg-gradient-to-b from-[#201CFF] to-[#C41CFF] sm:mr-10 mb-5 text-white"
-      >
-        Compile
-      </button>
-      {compiled && (
+      />{" "}
+      <div className="flex items-center justify-between flex-col sm:flex-row">
         <button
-        onClick={() => verifyContract()}
-        className="bg-gradient-to-t from-[#201CFF] to-[#C41CFF] py-2 px-10 hover:bg-gradient-to-b from-[#201CFF] to-[#C41CFF] sm:mr-10 mb-5 text-white"
+          onClick={() => handleCompile()}
+          className="bg-gradient-to-t from-[#201CFF] to-[#C41CFF] py-2 px-10 hover:bg-gradient-to-b from-[#201CFF] to-[#C41CFF] sm:mr-10 mb-5 text-white"
         >
-        Verify
-      </button>
+          Compile
+        </button>
+        {compiled && (
+          <button
+            onClick={() => verifyContract()}
+            className="bg-gradient-to-t from-[#201CFF] to-[#C41CFF] py-2 px-10 hover:bg-gradient-to-b from-[#201CFF] to-[#C41CFF] sm:mr-10 mb-5 text-white"
+          >
+            Verify
+          </button>
         )}
       </div>
     </div>
