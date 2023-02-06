@@ -209,7 +209,7 @@ const Explorer = () => {
       {showType == "source" && (
         <div>
           {contractData && (
-            <div className="">
+            <div>
               <ReturnedSourceCode 
               sourceCode={contractData.code}
               />

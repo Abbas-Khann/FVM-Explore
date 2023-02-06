@@ -1,11 +1,16 @@
 import React from "react";
-import { Code } from "@chakra-ui/react";
+import { Flex, Code } from "@chakra-ui/react";
 
 const ReturnedSourceCode = (props: any): JSX.Element => {
     const { sourceCode } = props
 
     return(
-        <div className="flex items-center justify-center flex-col pb-10">
+        <Flex
+        alignItems={"center"}
+        justifyContent={"center"}
+        paddingBottom={"20px"}
+        >
+            {/* className="flex items-center justify-center flex-col pb-10 */}
         <pre>
         <Code 
         variant="subtle"
@@ -17,7 +22,7 @@ const ReturnedSourceCode = (props: any): JSX.Element => {
             {sourceCode}
         </Code>
         </pre>
-        </div>
+        </Flex>
     )
 }
 
