@@ -29,8 +29,10 @@ const Explorer = () => {
   const [contractData, setContractData] = useState<contractDataType>();
   const [contractAddress, setContractAddress] = useState<string>();
   const [ipfsURI, setIpfsURI] = useState<string>();
-  const [isReadActive, setIsReadActive] = useState(false);
-  const [isWriteActive, setIsWriteActive] = useState(false);
+  const [isReadActive, setIsReadActive] = useState<boolean>(false);
+  const [isWriteActive, setIsWriteActive] = useState<boolean>(false);
+  const [isAbiActive,  setIsAbiActive] = useState<boolean>(false);
+  const [isSourceCodeActive, setIsSourceCodeActive] = useState<boolean>(false);
 
   const { address } = useAccount();
   const provider = useProvider();
@@ -142,6 +144,8 @@ const Explorer = () => {
               setShowType("read");
               setIsReadActive(true);
               setIsWriteActive(false);
+              setIsAbiActive(false)
+              setIsSourceCodeActive(false)
             }}
           >
             Read Contract
@@ -154,9 +158,38 @@ const Explorer = () => {
               setShowType("write");
               setIsWriteActive(true);
               setIsReadActive(false);
+              setIsSourceCodeActive(false);
+              setIsAbiActive(false)
             }}
           >
             Write Contract
+          </button>
+          <button
+            className={`text-white text-lg focus:border-t-2 ${
+              isAbiActive ? "border-t-2" : "none"
+            }`}
+            onClick={() => {
+              setShowType("abi");
+              setIsAbiActive(true)
+              setIsWriteActive(false)
+              setIsReadActive(false)
+            }}
+          >
+            Abi
+          </button>
+          <button
+            className={`text-white text-lg focus:border-t-2 ${
+              isSourceCodeActive ? "border-t-2" : "none"
+            }`}
+            onClick={() => {
+              setShowType("source");
+              setIsAbiActive(false)
+              setIsSourceCodeActive(true)
+              setIsReadActive(false);
+              setIsWriteActive(false)
+            }}
+          >
+            Source Code
           </button>
         </div>
       </div>
@@ -188,6 +221,7 @@ const Explorer = () => {
             })}
         </div>
       )}
+
 
       <Footer />
     </main>
