@@ -16,6 +16,8 @@ Interaction with contracts on FVM is difficult on it's own and FVM-Explore not o
 
 --> APIs for developers 👇
 
+API Docs:- [API.md](https://github.com/Abbas-Khann/FVM-Explore/blob/main/frontend/API.md)
+
 - Compiler to compile the code
 
 - Verifier to verify the contract code
