@@ -24,7 +24,6 @@ Interaction with contracts on FVM is difficult on it's own and FVM-Explore not o
 
 <img width="750" alt="Screenshot 2023-02-06 at 6 50 21 PM" src="https://user-images.githubusercontent.com/91938348/216992460-a29c9b78-9f22-4fdb-8b5e-392b8f51fc02.png">
 
-
 ## 👊 Team
 
 Abbas Khann
@@ -40,6 +39,8 @@ FVM-Explore will improve the experience even more and will launch a CLI for user
 - [Web Frontend](https://fvm-explore.vercel.app/)
 
 - [Registry Contract](https://github.com/Abbas-Khann/FVM-Explore/tree/main/contracts)
+
+- [Design File](https://www.figma.com/file/vdrXspb2EcceknJypukmoL/FVM-Explore?node-id=0%3A1&t=JhpfAYJpnDEV0pNc-0)
 
 🚫 License
 
