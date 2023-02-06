@@ -21,4 +21,11 @@ HyperSpace
 Test On HyperSpace
 --> Ballot 0x37fE5cB2FFF0ebBdab69AdC5A4EcE3Cb8C311A0d
 --> Storage 0x4307f4CfCcd2e3f8697EF2C1B5c91291AA58fFAb
-0xa7cBD97086fA4D246663C313e5ad21879957687F
+--> 0xa7cBD97086fA4D246663C313e5ad21879957687F
+
+https://www.figma.com/file/vdrXspb2EcceknJypukmoL/FVM-Explore?node-id=0%3A1&t=JhpfAYJpnDEV0pNc-0
+
+--> APIs for developers to interact
+-> Compiler to compile the code
+-> Verifier to verify the contract code
+-> Get ContractData for the contract
