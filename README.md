@@ -32,9 +32,9 @@ FVM-Explore will improve the experience even more and will launch a CLI for user
 
 ### 🔩 Project Structure
 
-- Web Frontend[https://fvm-explore.vercel.app/]
+- [Web Frontend](https://fvm-explore.vercel.app/)
 
-- Registry Contract[https://github.com/Abbas-Khann/FVM-Explore/tree/main/contracts]
+- [Registry Contract](https://github.com/Abbas-Khann/FVM-Explore/tree/main/contracts)
 
 🚫 License
 
