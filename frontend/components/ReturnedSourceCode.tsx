@@ -10,7 +10,6 @@ const ReturnedSourceCode = (props: any): JSX.Element => {
         justifyContent={"center"}
         paddingBottom={"20px"}
         >
-            {/* className="flex items-center justify-center flex-col pb-10 */}
         <pre>
         <Code 
         variant="subtle"
