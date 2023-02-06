@@ -16,6 +16,7 @@ import { explorerLink } from "@/constants/constants";
 import { useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import ReturnedAbi from "@/components/ReturnedAbi";
+import ReturnedSourceCode from "@/components/ReturnedSourceCode";
 
 const private_key: any = process.env.NEXT_PUBLIC_PRIVATE_KEY;
 
@@ -237,13 +238,13 @@ const Explorer = () => {
           )}
         </div>
       )}
-
-
       {showType == "source" && (
         <div>
           {contractData && (
             <div className="">
-              
+              <ReturnedSourceCode 
+              sourceCode={contractData.code}
+              />
             </div>
           )}
         </div>
