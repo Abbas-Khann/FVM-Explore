@@ -42,7 +42,7 @@ const Explorer = () => {
     signerOrProvider: provider,
   });
   const toast = useToast();
-  console.log(showType, "showtype here")
+  console.log(showType, "showtype here");
   useEffect(() => {
     const queryAddress: any = router.query.address;
     if (queryAddress) {
@@ -106,6 +106,10 @@ const Explorer = () => {
     }
     /// has bytecode , abi , code
     setContractData(contractData);
+    setShowType("source");
+    setIsSourceCodeActive(true);
+    setIsReadActive(false);
+    setIsWriteActive(false);
     getData(contractData.abi);
     //set default to the contract Tab and show all the data there
   }
@@ -116,10 +120,10 @@ const Explorer = () => {
     // console.log(data);
     setReadFunctions(data?.read);
     setWriteFunctions(data?.write);
-    
-    console.log(data, "getData")
+
+    console.log(data, "getData");
   }
-  console.log(contractData)
+  console.log(contractData);
   // now handle for the contract that does not exists
   // send the user to deploy page but with a contractAddress , so that it will not deploy the contract again and verify the contract
 
@@ -145,7 +149,7 @@ const Explorer = () => {
               setShowType("read");
               setIsReadActive(true);
               setIsWriteActive(false);
-              setIsSourceCodeActive(false)
+              setIsSourceCodeActive(false);
             }}
           >
             Read Contract
@@ -169,9 +173,9 @@ const Explorer = () => {
             }`}
             onClick={() => {
               setShowType("source");
-              setIsSourceCodeActive(true)
+              setIsSourceCodeActive(true);
               setIsReadActive(false);
-              setIsWriteActive(false)
+              setIsWriteActive(false);
             }}
           >
             Source Code
@@ -210,9 +214,7 @@ const Explorer = () => {
         <div>
           {contractData && (
             <div>
-              <ReturnedSourceCode 
-              sourceCode={contractData.code}
-              />
+              <ReturnedSourceCode sourceCode={contractData.code} />
             </div>
           )}
         </div>
