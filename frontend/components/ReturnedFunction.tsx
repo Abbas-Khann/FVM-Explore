@@ -38,7 +38,6 @@ const ReturnedFunction = (props: any) => {
       setIfPayable(payable);
     }
   }
-
   async function handleSubmit() {
     const abiInterface = new ethers.utils.Interface([data]);
 
@@ -168,7 +167,7 @@ const ReturnedFunction = (props: any) => {
           <p className="text-green-500 text-m py-2">Payable</p>
           <input
             onChange={(e) => setValue(e.target.value)}
-            placeholder="Value in ETH"
+            placeholder="Value in FIL"
             className="px-1 py-1 mb-4 bg-[#D1D7D9] text-black outline-none rounded-sm"
           />
         </>
@@ -208,12 +207,14 @@ const ReturnedFunction = (props: any) => {
             return (
               <div
                 key={key}
-                className="flex  items-center justify-between text-xl"
+                className="flex items-center justify-between text-xl"
               >
                 <h1 className="text-lg">
-                  {output.name ? output.name : "output :"}
+                  {output.name ? output.name : "Output :"}
                 </h1>
-                <h2>
+                <h2
+                className="text-green-400"
+                >
                   {/* {output.type == "uint256"
                     ? parseInt(argOutputs[key])
                     : argOutputs[key]} */}
